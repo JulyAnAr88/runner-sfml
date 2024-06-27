@@ -1,0 +1,17 @@
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
+
+#define WIDTH 1080
+#define HEIGHT 720
+
+#define GRAVITY 2.0f
+#define MOVE_SPEED 1
+#define JUMP_SPEED 20
+
+#define SPAWNING_TIME_MOSQUITO 10.0f
+#define SPAWNING_TIME_SERPIENTE 7.0f
+#define SPAWNING_TIME_ARBUSTO 1.5f
+#define SPAWNING_TIME_ROCA 1.5f
+
+
+#endif
