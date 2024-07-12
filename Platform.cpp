@@ -3,7 +3,7 @@
 
 Platform::Platform(const sf::Vector2f &pos, int tile): 
 	m_pos(pos){
-	switch(tile){
+/* 	switch(tile){
 	case 0:
 		m_tex.loadFromFile("img/Tile (1).png");
 		break;
@@ -27,15 +27,15 @@ Platform::Platform(const sf::Vector2f &pos, int tile):
 	
 	m_spr.setTexture(m_tex);
 	
-	m_spr.setScale(0.75,0.75);
+	m_spr.setScale(0.75,0.75); */
 	
 }
 
 void Platform::update(double elapsed) {
-	m_spr.setPosition(m_pos);
+	//m_spr.setPosition(m_pos);
 }
 
 void Platform::draw(sf::RenderTarget & target) {
-	target.draw(this->m_spr);
+	//target.draw(this->m_spr);
 }
 

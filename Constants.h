@@ -1,8 +1,8 @@
 #ifndef CONSTANTS_H
 #define CONSTANTS_H
 
-#define WIDTH 1080
-#define HEIGHT 720
+#define WIDTH 800
+#define HEIGHT 600
 
 #define GRAVITY 2.0f
 #define MOVE_SPEED 1

@@ -1,0 +1,6 @@
+Texture SnakeSprite
+Size 32 32
+Scale 0.5 0.5
+|Type|Name|StartFrame|EndFrame|Row|FrameTime|FrameActionStart|FrameActionEnd|
+AnimationType Directional
+Animation Move 0 7 0 0.2 -1 -1

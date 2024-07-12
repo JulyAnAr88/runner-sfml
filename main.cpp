@@ -1,14 +1,19 @@
 #include <SFML/Graphics.hpp>
 #include "Game.h"
-#include "GameScene.h"
 #include "Constants.h"
+#include <iostream>
 
 
 int main(int argc, char *argv[]){
-	SceneBase *scene = new GameScene();
-	Game &g = Game::create(sf::VideoMode(WIDTH,HEIGHT), scene, "Carrera al bachi");
-	g.run();
-	
-	return 0;
+	{
+		Game &game = Game::create(sf::VideoMode(WIDTH,HEIGHT),"Carrera al bachi");
+		while(!game.getWindow()->isDone()){
+			game.update();
+			game.render();
+			game.lateUpdate();
+		}
+	}
+		
+	system("PAUSE");
 }
 
