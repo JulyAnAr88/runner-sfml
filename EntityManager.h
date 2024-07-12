@@ -39,7 +39,7 @@ private:
 
 	void processRemovals();
 	void loadEnemyTypes(const std::string& l_name);
-	/* void entityCollisionCheck(); */
+	void entityCollisionCheck();
 
 	EntityContainer m_entities;
 	EnemyTypes m_enemyTypes;

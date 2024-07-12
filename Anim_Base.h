@@ -3,6 +3,7 @@
 
 #include <string>
 #include <SFML/Graphics.hpp>
+#include <utility>
 #include <vector>
 class SpriteSheet;
 
@@ -26,6 +27,7 @@ public:
 	void setFrameTime(float l_time);
 	void setLooping(bool l_loop);
 	void setName(const std::string& l_name);
+	void setFrameRect(int anim, sf::IntRect crop);
 
 	SpriteSheet* getSpriteSheet();
 	Frame getFrame();
@@ -59,7 +61,6 @@ protected:
 	virtual void frameStep() = 0;
 	virtual void cropSprite() = 0;
 	virtual void readIn(std::stringstream& l_stream) = 0;
-	virtual void setFrameRect(int anim, sf::IntRect crop) = 0;
 
 	Frame m_frameCurrent;
 	Frame m_frameStart;

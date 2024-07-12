@@ -77,38 +77,29 @@ bool SpriteSheet::loadSheet(const std::string& l_file){
 					continue;
 				}
 				if(m_animType == "Directional"){
-					anim = new Anim_Directional();
-					keystream >> *anim;
-					anim->setSpriteSheet(this);
-					anim->setName(name);
-					anim->Reset();
-					m_animations.emplace(name,anim);
-
-					if (m_animationCurrent){ continue; }
-					m_animationCurrent = anim;
-					m_animationCurrent->Play();
+					anim = new Anim_Directional();					
 				} else if (m_animType == "Untidy"){
-					anim = new Anim_Rect();
-					keystream >> *anim;					
-					anim->setSpriteSheet(this);
-					anim->setName(name);
-					anim->Reset();
-					m_animations.emplace(name,anim);
-	
-					if (m_animationCurrent){ continue; }
-					m_animationCurrent = anim;
-					m_animationCurrent->Play();					
+					anim = new Anim_Rect();				
 				} else {
 					std::cerr << "! Unknown animation type: " << m_animType << std::endl;
 					continue;
 				}				
-			}
-			if(type.find_first_not_of("0123456789") == std::string::npos){
-				int x, y, w, h;
-				keystream >> x >> y >> w >> h;
-				std::cout<<"animacion "<<type<<" "<<x<<" "<<y<<" "<< w<<" "<< h<<" "<<std::endl;
-				sf::IntRect l_crop(x,y,w,h);
-				anim->setFrameRect(atoi(type.c_str()),l_crop);
+				keystream >> *anim;
+				std::string intrec;
+				int x= 0, y= 0, w= 0, h= 0;
+				for(size_t i = 0; i<anim->getEndFrame();i++){
+					keystream >> x >> y >> w >> h;
+					sf::IntRect l_crop(x,y,w,h);
+					anim->setFrameRect(anim->getFrameRow(),l_crop);
+				}
+				
+				anim->setSpriteSheet(this);
+				anim->setName(name);
+				anim->Reset();
+				m_animations.emplace(name,anim);
+				if (m_animationCurrent){ continue; }
+				m_animationCurrent = anim;
+				m_animationCurrent->Play();
 			}
 		}
 		sheet.close();

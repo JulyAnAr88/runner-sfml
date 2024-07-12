@@ -6,10 +6,7 @@ class Anim_Rect : public Anim_Base{
 protected:
 	void frameStep();
 	void cropSprite();
-	void readIn(std::stringstream& l_stream);
-
-	void setFrameRect(int anim, sf::IntRect crop);
-	
+	void readIn(std::stringstream& l_stream);	
 private:
 	int m_animX;
 	int m_animY;

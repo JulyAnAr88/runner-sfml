@@ -15,6 +15,10 @@ void Anim_Base::setFrame(Frame l_frame){
 	}
 }
 
+void Anim_Base::setFrameRect(int anim, sf::IntRect crop){
+	m_frames.push_back(std::make_pair(anim,crop));
+}
+
 bool Anim_Base::isInAction(){
 	if (m_frameActionStart == -1 || m_frameActionEnd == -1){ return true; }
 	return (m_frameCurrent >= m_frameActionStart && m_frameCurrent <= m_frameActionEnd);

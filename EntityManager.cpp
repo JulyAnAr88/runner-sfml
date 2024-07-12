@@ -90,7 +90,7 @@ void EntityManager::processRemovals(){
 	}
 }
 
-/* void EntityManager::entityCollisionCheck(){
+void EntityManager::entityCollisionCheck(){
 	if (m_entities.empty()){ return; }
 	for(auto itr = m_entities.begin(); std::next(itr) != m_entities.end(); ++itr)
 	{
@@ -106,7 +106,7 @@ void EntityManager::processRemovals(){
 			
 		}
 	}
-} */
+}
 
 void EntityManager::loadEnemyTypes(const std::string& l_name){
 	std::ifstream file;
