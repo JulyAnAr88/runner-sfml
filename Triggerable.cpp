@@ -4,7 +4,7 @@ Triggerable::Triggerable(EntityManager *l_entityMgr)
     : Tile(l_entityMgr)
 {
     load("Triggerable.char");
-    m_type = EntityType::Triggerable;
+    m_type = EntityType::Tile;
 }
 
 Triggerable::~Triggerable(){

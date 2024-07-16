@@ -4,7 +4,7 @@ Collider::Collider(EntityManager *l_entityMgr)
     : Tile(l_entityMgr)
 {
     load("Collider.char");
-    m_type = EntityType::Collider;
+    m_type = EntityType::Tile;
 }
 
 Collider::~Collider(){

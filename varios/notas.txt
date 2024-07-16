@@ -2,7 +2,7 @@ cargar tiles
 colisiones
 
 cargo el nombre del tile como animación para setearlo en el update del tile
-
+tileinfo??
 
 		TileInfo* tile = new TileInfo(m_context,"TileSheet",tileId);
 		keystream >> tile->m_name >> tile->m_friction.x >> tile->m_friction.y 

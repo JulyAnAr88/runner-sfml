@@ -3,7 +3,7 @@
 Environment::Environment(EntityManager* l_entityMgr) : Tile(l_entityMgr)
 {
     load("Collider.char");
-    m_type = EntityType::Environment;
+    m_type = EntityType::Tile;
 }
 
 Environment::~Environment() {	

@@ -2,9 +2,9 @@
 #define TILE_H
 #include <SFML/Graphics.hpp>
 #include "Entity.h"
-#include "SharedContext.h"
+/* #include "SharedContext.h" */
 #include "SpriteSheet.h"
-
+//class SpriteSheet;
 class Tile : public Entity{
 friend class EntityManager;
 public:
@@ -40,10 +40,10 @@ private:
 	bool m_deadly;
 	sf::IntRect m_coordCrop;
 
-	SharedContext* m_context;
+	//SharedContext* m_context;
 	std::string m_texture;
 	
-	SpriteSheet m_spriteSheet;
+	SpriteSheet* m_spriteSheet;
 
 	void animate();
 
