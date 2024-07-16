@@ -12,5 +12,4 @@ void Enemy::onEntityCollision(Entity* l_collider, bool l_attack){
 void Enemy::update(float l_dT){
 	Character::update(l_dT);
 	
-	
 }

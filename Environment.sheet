@@ -1,0 +1,10 @@
+Texture TileSheet
+Size 32 32
+Scale .15 .15
+|id|name|friction x|friction y|deadly|StartFrame|EndFrame|FrameTime|FrameActionStart|FrameActionEnd|x|y|width|height|
+AnimationType Untidy
+20 Tree_2 0.8 0 0 0 0 0 0 0 3 370 282 301
+21 Tree_3 0.8 0 0 0 0 0 0 0 405 3 282 275
+22 Bush 0 0 0 0 0 0 0 0 405 284 133 65
+23 Sign 0 0 0 0 0 0 0 0  603 389 63 65
+24 Sign 0 0 0 0 0 0 0 0  603 460 62 64

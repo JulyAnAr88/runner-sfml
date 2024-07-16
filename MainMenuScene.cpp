@@ -8,6 +8,8 @@ MainMenuScene::MainMenuScene(SceneManager* l_sceneManager)
 MainMenuScene::~MainMenuScene(){}
 
 void MainMenuScene::onCreate(){
+	sf::Vector2u windowSize = m_sceneMgr->getContext()
+		->m_wind->getRenderWindow()->getSize();
 	m_font.loadFromFile("CompleteinHim.ttf");
 	m_text.setFont(m_font);
 	m_text.setString(sf::String("MENU"));
@@ -18,10 +20,10 @@ void MainMenuScene::onCreate(){
 	m_text.setOrigin(textRect.left + textRect.width / 2.0f,
 		textRect.top + textRect.height / 2.0f);
 
-	m_text.setPosition(400,100);
+	m_text.setPosition(windowSize.x / 2.0f, windowSize.y / 5.0f);
 
 	m_buttonSize = sf::Vector2f(300.0f,32.0f);
-	m_buttonPos = sf::Vector2f(400,200);
+	m_buttonPos = sf::Vector2f(windowSize.x / 2.0f, windowSize.y / 3.0f);
 	m_buttonPadding = 4; // 4px.
 
 	std::string str[3];
@@ -63,9 +65,9 @@ void MainMenuScene::onDestroy(){
 
 void MainMenuScene::activate(){
 	if (m_sceneMgr->hasScene(SceneType::Game)
-		&& m_labels[0].getString() != "RESUME")
+		&& m_labels[0].getString() != "CONTINUAR")
 	{
-		m_labels[0].setString(sf::String("RESUME"));
+		m_labels[0].setString(sf::String("CONTINUAR"));
 	} else {
 		m_labels[0].setString(sf::String("COMENZAR"));
 	}

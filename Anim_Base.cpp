@@ -7,7 +7,7 @@ Anim_Base::Anim_Base(): m_frameCurrent(0), m_frameStart(0), m_frameEnd(0),
 
 Anim_Base::~Anim_Base(){}
 
-void Anim_Base::setFrame(Frame l_frame){
+void Anim_Base::setFrame(int l_frame){
 	if((l_frame >= m_frameStart && l_frame <= m_frameEnd) ||
 		(l_frame >= m_frameEnd && l_frame <= m_frameStart))
 	{
@@ -40,20 +40,20 @@ void Anim_Base::update(const float& l_dT){
 }
 
 void Anim_Base::setSpriteSheet(SpriteSheet* l_sheet){ m_spriteSheet = l_sheet; }
-void Anim_Base::setStartFrame(Frame l_frame){ m_frameStart = l_frame; }
-void Anim_Base::setEndFrame(Frame l_frame){ m_frameEnd = l_frame; }
-void Anim_Base::setFrameRow(Frame l_row){ m_frameRow = l_row; }
-void Anim_Base::setActionStart(Frame l_frame){ m_frameActionStart = l_frame; }
-void Anim_Base::setActionEnd(Frame l_frame){ m_frameActionEnd = l_frame; }
+void Anim_Base::setStartFrame(int l_frame){ m_frameStart = l_frame; }
+void Anim_Base::setEndFrame(int l_frame){ m_frameEnd = l_frame; }
+void Anim_Base::setFrameRow(int l_row){ m_frameRow = l_row; }
+void Anim_Base::setActionStart(int l_frame){ m_frameActionStart = l_frame; }
+void Anim_Base::setActionEnd(int l_frame){ m_frameActionEnd = l_frame; }
 void Anim_Base::setFrameTime(float l_time){ m_frameTime = l_time; }
 void Anim_Base::setLooping(bool l_loop){ m_loop = l_loop; }
 void Anim_Base::setName(const std::string& l_name){ m_name = l_name; }
 
 SpriteSheet* Anim_Base::getSpriteSheet(){ return m_spriteSheet; }
-Frame Anim_Base::getFrame(){ return m_frameCurrent; }
-Frame Anim_Base::getStartFrame(){ return m_frameStart; }
-Frame Anim_Base::getEndFrame(){ return m_frameEnd; }
-Frame Anim_Base::getFrameRow(){ return m_frameRow; }
+int Anim_Base::getFrame(){ return m_frameCurrent; }
+int Anim_Base::getStartFrame(){ return m_frameStart; }
+int Anim_Base::getEndFrame(){ return m_frameEnd; }
+int Anim_Base::getFrameRow(){ return m_frameRow; }
 FrameContainer Anim_Base::getFrameContainer(){ return m_frames;}
 int Anim_Base::getActionStart() { return m_frameActionStart; }
 int Anim_Base::getActionEnd(){ return m_frameActionEnd; }

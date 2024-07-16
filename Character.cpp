@@ -18,7 +18,7 @@ void Character::move(const Direction& l_dir){
 }
 
 void Character::jump(){
-	if (getState() == EntityState::Dying || getState() == EntityState::Jumping || getState() == EntityState::Hurt){ return; }
+	if (getState() == EntityState::Dying || getState() == EntityState::Jumping || getState() == EntityState::Run){ return; }
 	setState(EntityState::Jumping);
 	addVelocity(0, -m_jumpVelocity);
 }
@@ -73,27 +73,22 @@ void Character::animate(){
 	EntityState state = getState();
 
 	if(state == EntityState::Walking && m_spriteSheet.
-		getCurrentAnim()->getName() != "Walk")
-	{
+		getCurrentAnim()->getName() != "Walk"){
 		m_spriteSheet.setAnimation("Walk",true,true);
-	} 
-	else if(state == EntityState::Jumping && m_spriteSheet.
-		getCurrentAnim()->getName() != "Jump")
-	{
-		m_spriteSheet.setAnimation("Jump",true,false);
-	} else if(state == EntityState::Hurt && m_spriteSheet.
-		getCurrentAnim()->getName() != "Hurt")
-	{
+	}  else if(state == EntityState::Hurt && m_spriteSheet.
+		getCurrentAnim()->getName() != "Hurt"){
 		m_spriteSheet.setAnimation("Hurt",true,false);
-	}
-	else if(state == EntityState::Dying && m_spriteSheet.
-		getCurrentAnim()->getName() != "Death")
-	{
+	} else if(state == EntityState::Jumping && m_spriteSheet.
+		getCurrentAnim()->getName() != "Jump"){
+		m_spriteSheet.setAnimation("Jump",true,false);
+	} else if(state == EntityState::Run && m_spriteSheet.
+		getCurrentAnim()->getName() != "Run"){
+		m_spriteSheet.setAnimation("Run",true,false);
+	} else if(state == EntityState::Dying && m_spriteSheet.
+		getCurrentAnim()->getName() != "Death"){
 		m_spriteSheet.setAnimation("Death",true,false);
-	}
-	else if(state == EntityState::Idle && m_spriteSheet.
-		getCurrentAnim()->getName() != "Idle")
-	{
+	} else if(state == EntityState::Idle && m_spriteSheet.
+		getCurrentAnim()->getName() != "Idle"){
 		m_spriteSheet.setAnimation("Idle",true,true);
 	}
 }

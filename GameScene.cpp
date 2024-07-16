@@ -44,7 +44,7 @@ void GameScene::update(const sf::Time& l_time){
 		player = context->m_entityManager->find("Player");
 		player->setPosition(m_gameMap->getPlayerStart());
 	} else {
-		m_view.setCenter(player->getPosition());
+		m_view.setCenter(player->getPosition().x,context->m_wind->getWindowSize().y/1.5f);
 		context->m_wind->getRenderWindow()->setView(m_view);
 	}
 

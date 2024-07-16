@@ -5,10 +5,14 @@
 #include <functional>
 #include "Player.h"
 #include "Enemy.h"
+#include "Collider.h"
+#include "Environment.h"
+#include "Triggerable.h"
 
 using EntityContainer = std::map<unsigned int,Entity*>;
 using EntityFactory = std::map<EntityType, std::function<Entity*(void)>>;
 using EnemyTypes = std::map<std::string,std::string>;
+using TilesTypes = std::map<std::string,std::string>;
 
 struct SharedContext;
 
@@ -17,10 +21,11 @@ public:
 	EntityManager(SharedContext* l_context, unsigned int l_maxEntities);
 	~EntityManager();
 
-	int add(const EntityType& l_type, const std::string& l_name = "");
+	int add(const EntityType& l_type, const std::string& l_name = "", const int l_id = 0);
 	Entity* find(unsigned int l_id);
 	Entity* find(const std::string& l_name);
 	void remove(unsigned int l_id);
+	int getTileCant();
 
 	void update(float l_dT);
 	void draw();
@@ -39,14 +44,17 @@ private:
 
 	void processRemovals();
 	void loadEnemyTypes(const std::string& l_name);
+	void loadTilesTypes(const std::string& l_name);
 	void entityCollisionCheck();
 
 	EntityContainer m_entities;
 	EnemyTypes m_enemyTypes;
+	TilesTypes m_tilesTypes;
 	EntityFactory m_entityFactory;
 	SharedContext* m_context;
 	unsigned int m_idCounter;
 	unsigned int m_maxEntities;
+	unsigned int m_tileCant;
 
 	std::vector<unsigned int> m_entitiesToRemove;
 };

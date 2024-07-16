@@ -5,11 +5,11 @@
 
 class EntityManager;
 
-enum class EntityType{ Base, Enemy, Player };
+enum class EntityType{ Base, Enemy, Player, Tile };
 
-enum class EntityState{ Idle, Walking, Jumping, Hurt, Dying };
+enum class EntityState{ Idle, Walking, Jumping, Run, Hurt, Dying, Move, Water, Flag };
 
-struct TileInfo;
+using TileInfo = std::map<int, std::string>;
 
 class Entity {
 	friend class EntityManager;
@@ -30,6 +30,8 @@ protected:
 	EntityState m_state; // Current entity state.
 
 	EntityManager* m_entityManager;
+
+	virtual void readIn(std::stringstream& l_stream) = 0;
 	
 public:	
 	Entity(EntityManager* l_entityMgr);        			
@@ -64,6 +66,14 @@ public:
 	virtual void onEntityCollision(Entity* l_collider, bool l_attack) = 0;
 	virtual void draw(sf::RenderWindow* l_wind) = 0;   
 	virtual void update(float l_dT);
+
+	
+	friend std::stringstream& operator >>(
+		std::stringstream& l_stream, Entity& a)
+	{
+		a.readIn(l_stream);
+		return l_stream;
+	}
 	
 };
 

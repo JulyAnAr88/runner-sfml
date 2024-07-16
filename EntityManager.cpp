@@ -5,17 +5,20 @@ EntityManager::EntityManager(SharedContext* l_context, unsigned int l_maxEntitie
 	:m_context(l_context), m_maxEntities(l_maxEntities), m_idCounter(0)
 {
 	loadEnemyTypes("EnemyList.list");
+	loadTilesTypes("TileList.list");
 	registerEntity<Player>(EntityType::Player);
 	registerEntity<Enemy>(EntityType::Enemy);
+	registerEntity<Tile>(EntityType::Tile);
 }
 EntityManager::~EntityManager(){ purge(); }
 
-int EntityManager::add(const EntityType& l_type, const std::string& l_name)
-{
+int EntityManager::add(const EntityType& l_type, const std::string& l_name, const int l_id){
 	auto itr = m_entityFactory.find(l_type);
 	if (itr == m_entityFactory.end()){ return -1; }
 	Entity* entity = itr->second();
-	entity->m_id = m_idCounter;
+	if(l_type != EntityType::Tile && l_id == 0){
+		entity->m_id = m_idCounter;
+	}
 	if (l_name != ""){ entity->m_name = l_name; }
 
 	m_entities.emplace(m_idCounter,entity);
@@ -25,6 +28,15 @@ int EntityManager::add(const EntityType& l_type, const std::string& l_name)
 		if(itr != m_enemyTypes.end()){
 			Enemy* enemy = (Enemy*)entity;
 			enemy->load(itr->second);
+		}
+	}
+	
+	if(l_type == EntityType::Tile){
+		auto itr = m_tilesTypes.find(l_name);
+		if(itr != m_tilesTypes.end()){
+			Tile* tile = (Tile*)entity;
+			tile->m_id = l_id;
+			tile->load(itr->second);
 		}
 	}
 
@@ -124,4 +136,24 @@ void EntityManager::loadEnemyTypes(const std::string& l_name){
 	file.close();
 }
 
+void EntityManager::loadTilesTypes(const std::string& l_name){
+	std::ifstream file;
+	file.open(l_name);
+	if (!file.is_open()){ std::cout << "! Failed loading file: " << l_name << std::endl; return; }
+	std::string line;
+	while(std::getline(file,line)){
+		if (line[0] == '|'){ continue; }
+		std::stringstream keystream(line);
+		std::string name;
+		std::string charFile;
+		keystream >> name >> charFile>> m_tileCant;
+		m_tilesTypes.emplace(name,charFile);
+	}
+	file.close();
+}
+
 SharedContext* EntityManager::getContext(){ return m_context; }
+
+int EntityManager::getTileCant(){
+	return m_tileCant;
+}

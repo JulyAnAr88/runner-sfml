@@ -19,8 +19,6 @@ Game &Game::create(const sf::VideoMode &videoMode, const std::string &name)
 		g.m_clock.restart();
 		srand(time(nullptr));
 		
-		/* g.m_sceneManager = SceneManager(&g.m_context);
-		g.m_entityManager = EntityManager(&g.m_context, 100); */
 		g.m_window.getRenderWindow()->create(videoMode, name);
 		g.m_window.getRenderWindow()->setFramerateLimit(60);		
 

@@ -77,21 +77,25 @@ bool SpriteSheet::loadSheet(const std::string& l_file){
 					continue;
 				}
 				if(m_animType == "Directional"){
-					anim = new Anim_Directional();					
+					anim = new Anim_Directional();	
+
+					keystream >> *anim;
+					
 				} else if (m_animType == "Untidy"){
 					anim = new Anim_Rect();				
+
+					keystream >> *anim;
+					int x= 0, y= 0, w= 0, h= 0;
+					for(size_t i = 0; i <= anim->getEndFrame(); i++){
+						keystream >> x >> y >> w >> h;
+						sf::IntRect l_crop(x,y,w,h);
+						anim->setFrameRect(anim->getFrameRow(),l_crop);
+					}
+
 				} else {
 					std::cerr << "! Unknown animation type: " << m_animType << std::endl;
 					continue;
 				}				
-				keystream >> *anim;
-				std::string intrec;
-				int x= 0, y= 0, w= 0, h= 0;
-				for(size_t i = 0; i<anim->getEndFrame();i++){
-					keystream >> x >> y >> w >> h;
-					sf::IntRect l_crop(x,y,w,h);
-					anim->setFrameRect(anim->getFrameRow(),l_crop);
-				}
 				
 				anim->setSpriteSheet(this);
 				anim->setName(name);
@@ -109,9 +113,80 @@ bool SpriteSheet::loadSheet(const std::string& l_file){
 	return false;
 }
 
+bool SpriteSheet::loadTileSheet(const std::string& l_file, EntityManager& entityMgr){
+	std::ifstream sheet;
+	sheet.open(l_file);
+	if(sheet.is_open()){
+		releaseSheet(); // Release current sheet resources.
+		std::string line;
+		while(std::getline(sheet,line)){
+			if (line[0] == '|'){ continue; }
+			std::stringstream keystream(line);
+			std::string type;
+			keystream >> type;
+			Tile* tile = nullptr;
+			if(type == "Texture"){
+				if (m_texture != ""){
+					std::cerr << "! Duplicate texture entries in: " << l_file << std::endl;
+					continue;
+				}
+				std::string texture;
+				keystream >> texture;
+				if (!m_textureManager->requireResource(texture)){
+					std::cerr << "! Could not set up the texture: " << texture << std::endl;
+					continue;
+				}
+				m_texture = texture;
+				m_sprite.setTexture(*m_textureManager->getResource(m_texture));
+			} else if(type == "Size"){
+				keystream >> m_spriteSize.x >> m_spriteSize.y;
+				setSpriteSize(m_spriteSize);
+			} else if(type == "Scale"){
+				keystream >> m_spriteScale.x >> m_spriteScale.y;
+				m_sprite.setScale(m_spriteScale);
+			} else if(type == "AnimationType"){
+				keystream >> m_animType;
+			} else if(type.find_first_not_of( "0123456789" ) == std::string::npos){
+				int tileId = atoi(type.c_str());
+				if (tileId < 0){ continue; }
+				tile = new Tile(&entityMgr,tileId);
+				keystream >> *tile;
+				if (tile->getFrameEnd() > 0){
+					Anim_Rect* anim = new Anim_Rect(tile->getFrameStart(), tile->getFrameEnd(),
+					 tile->getFrameTime(), tile->getFrameActionStart(), tile->getFrameActionEnd());
+					for(size_t i = 0; i <= anim->getEndFrame(); i++){
+						int x, y, w, h;
+						keystream >> x >> y >> w >> h;
+						tile->setCoordCrop(x, y, w, h);
+						anim->setFrameRect(anim->getFrameRow(), tile->getCoordCrop());
+					/* std::cout<<"coord tile "<<i<<" "<<tile->coordCrop.left<<" "<<tile->coordCrop.top<<" "<<
+					 tile->coordCrop.width<<" "<<tile->coordCrop.height<<std::endl; */
+					}
+					anim->setSpriteSheet(this);
+					anim->setName(tile->getName());
+					anim->Reset();
+					m_animations.emplace(tile->getName(),anim);
+					anim->Play();
+				}else{
+					int x, y, w, h;
+					keystream >> x >> y >> w >> h;
+					tile->setCoordCrop(x, y, w, h);					
+				}
+			std::cout<<"load en map tile "<<tile->getCoordCrop().left<<" "<<tile->getCoordCrop().top<<" "<<
+			 tile->getCoordCrop().width<<" "<<tile->getCoordCrop().height<<std::endl;
+		
+		if(!m_tiles.emplace(tileId,tile).second){
+			// Duplicate tile detected!
+			std::cout << "! Duplicate tile type: " << tile->getName() << std::endl;
+			delete tile;
+		}
+			}
+		}
+	}
+}
+
 bool SpriteSheet::setAnimation(const std::string& l_name, 
-	const bool& l_play, const bool& l_loop)
-{
+	const bool& l_play, const bool& l_loop){
 	auto itr = m_animations.find(l_name);
 	if (itr == m_animations.end()){ return false; }
 	if (itr->second == m_animationCurrent){ return false; }

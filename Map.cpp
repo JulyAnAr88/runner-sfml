@@ -3,12 +3,16 @@
 #include <cmath>
 
 Map::Map(SharedContext* l_context, BaseScene* l_currentScene)
-	:m_context(l_context), m_defaultTile(l_context), m_maxMapSize(32, 32),
+	:m_context(l_context), /* m_defaultTile(l_context), */ m_maxMapSize(32, 32),
 	m_tileCount(0), m_tileSetCount(0), m_mapGravity(512.f), m_loadNextMap(false),
 	m_currentScene(l_currentScene)
 {
 	m_context->m_gameMap = this;
-	loadTiles("tiles.cfg");
+	std::string tilesPaths[3];
+	tilesPaths[0] = "Collider.sheet";
+	tilesPaths[1] = "Environment.sheet";
+	tilesPaths[2] = "Triggerable.sheet";
+	loadTiles();
 }
 
 Map::~Map(){
@@ -21,7 +25,7 @@ Tile* Map::getTile(unsigned int l_x, unsigned int l_y){
 	auto itr = m_tileMap.find(convertCoords(l_x,l_y));
 	return(itr != m_tileMap.end() ? itr->second : nullptr);
 }
-TileInfo* Map::getDefaultTile(){ return &m_defaultTile; }
+//TileInfo* Map::getDefaultTile(){ return &m_defaultTile; }
 float Map::getGravity()const{ return m_mapGravity; }
 unsigned int Map::getTileSize()const{ return Sheet::Tile_Size; }
 const sf::Vector2u& Map::getMapSize()const{ return m_maxMapSize; }
@@ -41,35 +45,39 @@ void Map::loadMap(const std::string& l_path){
 		std::stringstream keystream(line);
 		std::string type;
 		keystream >> type;
-		if(type == "TILE"){
-			int tileId = 0;
-			keystream >> tileId;
-			if (tileId < 0){ std::cout << "! Bad tile id: " << tileId << std::endl; continue; }
-			auto itr = m_tileSet.find(tileId);
-			if (itr == m_tileSet.end()){ std::cout << "! Tile id(" << tileId << ") was not found in tileset." << std::endl; continue; }
+		if(type == "COLLIDER"){
+			int colliderId = 0;
+			keystream >> colliderId;
+			if (colliderId < 0){ std::cout << "! Bad tile id: " << colliderId << std::endl; continue; }
+			auto itr = m_tileSet.find(colliderId);
+			if (itr == m_tileSet.end()){ std::cout << "! Tile id(" << colliderId << ") was not found in tileset." << std::endl; continue; }
 			sf::Vector2i tileCoords;
 			keystream >> tileCoords.x >> tileCoords.y;
+			TileInfo ti;
+			ti[colliderId] = type;
 			if (tileCoords.x > m_maxMapSize.x || tileCoords.y > m_maxMapSize.y){
 				std::cout << "! Tile is out of range: "<< tileCoords.x << " " << tileCoords.y << std::endl;
 				continue;
 			}
-			Tile* tile = new Tile();
-			// Bind properties of a tile from a set.
-			tile->m_properties = itr->second;
-			if(!m_tileMap.emplace(convertCoords(tileCoords.x,tileCoords.y),tile).second)
-			{
+			colliderId = entityMgr->add(EntityType::Tile,"Collider",colliderId);
+			if (colliderId < 0){ continue; }
+			if(!m_tileMap.emplace(convertCoords(tileCoords.x,tileCoords.y),entityMgr->find(colliderId)).second){
 				// Duplicate tile detected!
 				std::cout << "! Duplicate tile! : " << tileCoords.x 
 					<< "" << tileCoords.y << std::endl;
-				delete tile;
-				tile = nullptr;
+				entityMgr->remove(colliderId);
 				continue;
 			}
-			std::string warp;
-			keystream >> warp;
-			tile->m_warp = false;
-			if(warp == "WARP"){ tile->m_warp = true; }
-		} else if(type == "BACKGROUND"){
+			entityMgr->find(colliderId)->setPosition(tileCoords.x,tileCoords.y);
+		} else if(type == "ENVIRONMENT"){
+			int enviroId = 0;
+			keystream >> enviroId;
+			int enviroMapId = entityMgr->add(EntityType::Tile, "Environment", enviroId);
+			if (enviroMapId < 0){ std::cout << "! Bad env id: " << enviroMapId << std::endl; continue;  }
+			float enviroX = 0; float enviroY = 0;
+			keystream >> enviroX >> enviroY;
+			entityMgr->find(enviroMapId)->setPosition(enviroX, enviroY);
+		}else if(type == "BACKGROUND"){
 			if (m_backgroundTexture != ""){ continue; }
 			keystream >> m_backgroundTexture;
 			if (!m_context->m_textureManager->requireResource(m_backgroundTexture)){
@@ -89,7 +97,7 @@ void Map::loadMap(const std::string& l_path){
 		} else if(type == "GRAVITY"){
 			keystream >> m_mapGravity;
 		} else if(type == "DEFAULT_FRICTION"){
-			keystream >> m_defaultTile.m_friction.x >> m_defaultTile.m_friction.y;
+			//keystream >> m_defaultTile.m_friction.x >> m_defaultTile.m_friction.y;
 		} else if(type == "NEXTMAP"){
 			keystream >> m_nextMap;
 		} else if(type == "PLAYER"){
@@ -120,26 +128,57 @@ void Map::loadMap(const std::string& l_path){
 
 void Map::loadNext(){ m_loadNextMap = true; }
 
-void Map::loadTiles(const std::string& l_path){
-	std::ifstream file;
-	file.open(l_path);
-	if (!file.is_open()){ std::cout << "! Failed loading tile set file: " << l_path << std::endl; return; }
-	std::string line;
-	while(std::getline(file,line)){
-		if (line[0] == '|'){ continue; }
-		std::stringstream keystream(line);
-		int tileId;
-		keystream >> tileId;
-		if (tileId < 0){ continue; }
-		TileInfo* tile = new TileInfo(m_context,"TileSheet",tileId);
-		keystream >> tile->m_name >> tile->m_friction.x >> tile->m_friction.y >> tile->m_deadly;
-		if(!m_tileSet.emplace(tileId,tile).second){
-			// Duplicate tile detected!
-			std::cout << "! Duplicate tile type: " << tile->m_name << std::endl;
-			delete tile;
-		}
+void Map::loadTiles(){
+	/*Collider *collider = new Collider(m_context->m_entityManager);
+	for(size_t i = 0; i < m_context->m_entityManager->getTileCant(); i++){
+		m_tileSet.emplace(i, new Collider(m_context->m_entityManager,i));
 	}
-	file.close();
+	Environment *enviro = new Environment(m_context->m_entityManager);
+	Triggerable *triggerable = new Triggerable(m_context->m_entityManager);
+
+		for(size_t i = 0; i < l_path->size();i++){
+	 loadt
+		std::ifstream file;
+		file.open(l_path[i]);
+		if (!file.is_open()){ std::cout << "! Failed loading tile set file: " << l_path << std::endl; return; }
+		std::string line;
+		while(std::getline(file,line)){
+			if (line[0] == '|'){ continue; }
+			std::stringstream keystream(line);
+			int tileId;
+			keystream >> tileId;
+			if (tileId < 0){ continue; }
+			TileInfo* tile = new TileInfo(m_context,"TileSheet",tileId);
+			keystream >> tile->m_name >> tile->m_friction.x >> tile->m_friction.y 
+			>> tile->m_deadly >> tile->m_frameStart >> tile->m_frameEnd
+			>> tile->m_frameTime >> tile->m_frameActionStart >> tile->m_frameActionEnd;
+			if (tile->m_frameEnd > 0){
+				Anim_Rect* anim = new Anim_Rect(tile->m_frameStart, tile->m_frameEnd,
+				 tile->m_frameTime, tile->m_frameActionStart, tile->m_frameActionEnd);
+				for(size_t i = 0; i <= anim->getEndFrame(); i++){
+					keystream >> tile->coordCrop.left >> tile->coordCrop.top >> tile->coordCrop.width >> tile->coordCrop.height;
+					anim->setFrameRect(anim->getFrameRow(), tile->coordCrop);
+				/* std::cout<<"coord tile "<<i<<" "<<tile->coordCrop.left<<" "<<tile->coordCrop.top<<" "<<
+				 tile->coordCrop.width<<" "<<tile->coordCrop.height<<std::endl; 
+				}
+				anim->setName(tile->m_name);
+				anim->Reset();
+				m_animations.emplace(tile->m_name,anim);
+				anim->Play();
+			}else{
+				keystream >> tile->coordCrop.left >> tile->coordCrop.top >> tile->coordCrop.width >> tile->coordCrop.height;
+			}
+				std::cout<<"load en map tile "<<tile->coordCrop.left<<" "<<tile->coordCrop.top<<" "<<
+				 tile->coordCrop.width<<" "<<tile->coordCrop.height<<std::endl;
+
+			if(!m_tileSet.emplace(tileId,tile).second){
+				// Duplicate tile detected!
+				std::cout << "! Duplicate tile type: " << tile->m_name << std::endl;
+				delete tile;
+			}
+		}
+		file.close(); 
+	}*/
 }
 
 void Map::update(float l_dT){
@@ -176,22 +215,6 @@ void Map::draw(){
 			sprite.setPosition(x * Sheet::Tile_Size, y * Sheet::Tile_Size);
 			l_wind->draw(sprite);
 			++count;
-
-			// Debug.
-			/* if(m_context->m_debugOverlay.Debug()){
-				if(tile->m_properties->m_deadly || tile->m_warp){
-					sf::RectangleShape* tileMarker = new sf::RectangleShape(
-						sf::Vector2f(Sheet::Tile_Size,Sheet::Tile_Size));
-					tileMarker->setPosition(x * Sheet::Tile_Size, y * Sheet::Tile_Size);
-					if(tile->m_properties->m_deadly){
-						tileMarker->setFillColor(sf::Color(255,0,0,100));
-					} else if(tile->m_warp){
-						tileMarker->setFillColor(sf::Color(0,255,0,150));
-					}
-					m_context->m_debugOverlay.Add(tileMarker);
-				}
-			} */
-			// End debug.
 		}
 	}
 }

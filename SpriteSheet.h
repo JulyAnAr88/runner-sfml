@@ -6,9 +6,11 @@
 #include "TextureManager.h"
 #include "Anim_Directional.h"
 #include "Anim_Rect.h"
+#include "Tile.h"
 #include <map>
 
 using Animations = std::map<std::string,Anim_Base*>;
+using TileMap = std::map<int,Tile*>;
 
 class SpriteSheet{
 public:
@@ -25,6 +27,7 @@ public:
 	Direction getDirection()const;
 
 	bool loadSheet(const std::string& l_file);
+	bool loadTileSheet(const std::string& l_file, EntityManager& entityMgr);
 	void releaseSheet();
 
 	Anim_Base* getCurrentAnim();
@@ -44,6 +47,7 @@ private:
 	std::string m_animType;
 	Animations m_animations;
 	Anim_Base* m_animationCurrent;
+	TileMap m_tiles;
 
 	TextureManager* m_textureManager;
 };
