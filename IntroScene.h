@@ -1,29 +1,29 @@
 #ifndef INTROSCENE_H
 #define INTROSCENE_H
 #include "BaseScene.h"
-#include "EventManager.h"
+class Game;
 
 class IntroScene : public BaseScene{
 public:
-	IntroScene(SceneManager* l_sceneManager);
+	IntroScene(sf::Vector2f l_centerView);
+	IntroScene();
 	~IntroScene();
 	
-	void onCreate();
+	void onCreate(TextureMap &l_textureMap);
 	void onDestroy();
 	
 	void activate();
 	void deactivate();
 	
-	void update(const sf::Time& l_time);
-	void draw();
+	void update(const sf::Time& l_time, Game &g);
+	void draw(sf::RenderWindow &w);
+
+	void processEvent(const sf::Event &e);
 	
-	void Continue(EventDetails* l_details);
 private:
 	sf::Sprite m_introSprite;
-	sf::Font m_font;
-	sf::Font m_fontTitle;
-	sf::Text m_textTitle;
-	sf::Text m_text;
+	sf::Font m_font, m_fontTitle;
+	sf::Text m_textTitle, m_text;
+
 };
 #endif
-

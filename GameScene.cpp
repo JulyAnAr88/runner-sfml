@@ -1,78 +1,64 @@
 #include "GameScene.h" 
-#include "SceneManager.h"
+#include "GameOverScene.h" 
+#include "IntroScene.h" 
+#include "HUD.h"
+#include "SharedContext.h"
+#include <cmath>
+#include <vector>
+#include <windows.h>
 
-GameScene::GameScene(SceneManager* l_sceneManager)
-	: BaseScene(l_sceneManager){}
+GameScene::GameScene() : BaseScene(){
+}
 
-GameScene::~GameScene(){}
+void GameScene::onCreate(TextureMap &l_textureMap){
+	m_tm = &l_textureMap;
+	this->m_view = new sf::View(sf::FloatRect(0, 0.f, WIDTH, HEIGHT));
+	m_terreno = new Land(l_textureMap);
+	m_terreno->setView(*m_view);
+	m_terreno->loadMap("varios/map1.map");
 
-void GameScene::onCreate(){
-	EventManager* evMgr = m_sceneMgr->
-		getContext()->m_eventManager;
-
-	evMgr->addCallback(SceneType::Game, "Key_Escape", &GameScene::MainMenu, this);
-	evMgr->addCallback(SceneType::Game, "Key_P", &GameScene::Pause, this);
-	//evMgr->AddCallback(SceneType::Game, "Key_O", &GameScene::ToggleOverlay, this);
-
-	sf::Vector2u size = m_sceneMgr->getContext()->m_wind->getWindowSize();
-	m_view.setSize(size.x,size.y);
-	m_view.setCenter(size.x/2,size.y/2);
-	m_view.zoom(0.6f);
-	m_sceneMgr->getContext()->m_wind->getRenderWindow()->setView(m_view);
-
-	m_gameMap = new Map(m_sceneMgr->getContext(), this);
-	m_gameMap->loadMap("map1.map");
 }
 
 void GameScene::onDestroy(){
-	EventManager* evMgr = m_sceneMgr->
-		getContext()->m_eventManager;
-	evMgr->removeCallback(SceneType::Game, "Key_Escape");
-	evMgr->removeCallback(SceneType::Game, "Key_P");
-	evMgr->removeCallback(SceneType::Game, "Key_O");
+}
+
+void GameScene::update(const sf::Time& l_time, Game &g){
+	sf::Time time = m_clock.getElapsedTime();
+	m_terreno->update(l_time.asSeconds()*250,g);
 	
-	delete m_gameMap;
-	m_gameMap = nullptr;
-}
-
-void GameScene::update(const sf::Time& l_time){
-	SharedContext* context = m_sceneMgr->getContext();
-	Entity* player = context->m_entityManager->find("Player");
-	if(!player){
-		std::cout << "Respawning player..." << std::endl;
-		context->m_entityManager->add(EntityType::Player,"Player");
-		player = context->m_entityManager->find("Player");
-		player->setPosition(m_gameMap->getPlayerStart());
-	} else {
-		m_view.setCenter(player->getPosition().x,context->m_wind->getWindowSize().y/1.5f);
-		context->m_wind->getRenderWindow()->setView(m_view);
+	bool play= m_terreno->getPlayerPosition().x*3 > 0;
+	bool plvi = m_view->getCenter().x+1 > WIDTH/4.5;
+	pos_view_x = m_terreno->getPlayerPosition().x;
+	
+	if(play && plvi){		
+		this->m_view->setCenter(sf::Vector2f(pos_view_x+250, HEIGHT*0.5));
 	}
-
-	sf::FloatRect viewSpace = context->m_wind->getViewSpace();
-	if(viewSpace.left <= 0){
-		m_view.setCenter(viewSpace.width / 2,m_view.getCenter().y);
-		context->m_wind->getRenderWindow()->setView(m_view);
-	} else if (viewSpace.left + viewSpace.width > (m_gameMap->getMapSize().x + 1) * Sheet::Tile_Size){
-		m_view.setCenter(((m_gameMap->getMapSize().x + 1) * Sheet::Tile_Size) - (viewSpace.width / 2), m_view.getCenter().y);
-		context->m_wind->getRenderWindow()->setView(m_view);
+	this->m_view->setSize(sf::Vector2f( WIDTH, HEIGHT));
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F1)){
+		//IntroScene *is = new IntroScene(m_view->getCenter());
+		//is->onCreate(*m_tm);
+		g.switchScene(new IntroScene());
 	}
-
-	m_gameMap->update(l_time.asSeconds());
-	m_sceneMgr->getContext()->m_entityManager->update(l_time.asSeconds());
+	
 }
 
-void GameScene::draw(){
-	m_gameMap->draw();
-	m_sceneMgr->getContext()->m_entityManager->draw();
+void GameScene::draw(sf::RenderWindow &w){
+	w.clear();
+
+	m_terreno->draw(w);
+	//m_hud->draw(w);
+	
+	w.setView(*m_view);
+		
+	//w.display();
+	
 }
 
-void GameScene::MainMenu(EventDetails* l_details){
-	m_sceneMgr->switchTo(SceneType::MainMenu);
+void GameScene::processEvent(const sf::Event &e){
+	
 }
 
-void GameScene::Pause(EventDetails* l_details){
-	m_sceneMgr->switchTo(SceneType::Paused);
+GameScene::~GameScene(){
+	delete m_hud;
+	delete m_terreno;
 }
-
-void GameScene::activate(){}
-void GameScene::deactivate(){}

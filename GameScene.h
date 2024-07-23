@@ -1,28 +1,38 @@
 #ifndef GAMESCENE_H
 #define GAMESCENE_H
-#include "Map.h"
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <vector>
+#include <map>
+#include "Game.h"
+#include "Player.h"
 #include "BaseScene.h"
-#include "EventManager.h"
+#include "Land.h"
+class Land;
+class HUD;
 
 class GameScene : public BaseScene {
 public:
-	GameScene(SceneManager* l_sceneManager);
-	
-	void onCreate();
+	GameScene();
+
+	void onCreate(TextureMap &l_textureMap);
 	void onDestroy();
 
-	void activate();
-	void deactivate();
+	void update(const sf::Time& l_time, Game &g);
+	void draw(sf::RenderWindow &w);
+	void processEvent(const sf::Event &e);
 
-	void update(const sf::Time& l_time);
-	void draw();
-
-	void MainMenu(EventDetails* l_details);
-	void Pause(EventDetails* l_details);
-	//void ToggleOverlay(EventDetails* l_details);
 	~GameScene();
-private:
-	Map* m_gameMap;
+protected:
+	
+	Land* m_terreno;
+
+	int m_puntos = 0;		
+	float pos_view_x = 0;
+	sf::Clock m_clock;
+
+	HUD* m_hud;
+	TextureMap* m_tm;
 
 };
 

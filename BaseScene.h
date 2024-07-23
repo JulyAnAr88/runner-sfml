@@ -2,37 +2,47 @@
 #define BASESCENE_H
 #include <SFML/Graphics.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
-class SceneManager;
+
+class Game;
+struct TextureMap;
 /**
  * Escena de la que heredarán todas las del juego
  */
 class BaseScene {
-	friend class SceneManager;
 protected:
-	SceneManager* m_sceneMgr;
-	bool m_transparent;
-	bool m_transcendent;
-	sf::View m_view;
+	sf::View *m_view;
+	sf::Font m_fontComplete, m_fontBowlby;
 public:
-	BaseScene(SceneManager* l_sceneManager) 
-		:m_sceneMgr(l_sceneManager), m_transparent(false){};
+	BaseScene(){ loadFonts();};
+
 	virtual ~BaseScene(){};
 
-	virtual void onCreate() = 0;
+	virtual void onCreate(TextureMap &l_textureMap) = 0;
 	virtual void onDestroy() = 0;
+	
+	virtual void update(const sf::Time& l_time, Game &g) = 0;
+	
+	virtual void draw(sf::RenderWindow &w) = 0;
 
-	virtual void activate() = 0;
-	virtual void deactivate() = 0;
+	void setView(sf::View &l_view){*m_view = l_view;}
+	
+	/// notifica a la escena de un evento
+	virtual void processEvent(const sf::Event &e) = 0;
 
-	virtual void update(const sf::Time& l_time) = 0;
-	virtual void draw() = 0;
+	sf::View& getView(){ return *m_view; }
 
-	void setTransparent(const bool& l_transparent){ m_transparent = l_transparent; }
-	bool isTransparent()const{ return m_transparent; }
-	void setTranscendent(const bool& l_transcendence){ m_transcendent = l_transcendence; }
-	bool isTranscendent()const{ return m_transcendent; }
-	sf::View& getView(){ return m_view; }
-	SceneManager* getSceneManager(){ return m_sceneMgr; }
+	sf::Font& getFontB(){ 
+		m_fontBowlby.loadFromFile("fonts/BowlbyOneSC-Regular.otf");
+		return m_fontBowlby;}
+	
+	sf::Font& getFontC(){ 
+		m_fontComplete.loadFromFile("fonts/CompleteinHim.ttf");
+		return m_fontComplete;}
+
+	void loadFonts(){
+		m_fontBowlby.loadFromFile("fonts/BowlbyOneSC-Regular.otf");
+		m_fontComplete.loadFromFile("fonts/CompleteinHim.ttf");
+	}
 
 };
 

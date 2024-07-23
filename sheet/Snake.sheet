@@ -1,0 +1,6 @@
+Texture img/EnemiesTexture.png  
+Size 80 80
+Scale 1.5 1.5
+|Type|Name|NroAnimation|StartFrame|EndFrame|FrameTime|FrameActionStart|FrameActionEnd|x|y|width|height|
+AnimationType Untidy
+Animation Move 0 0 12 0.2 -1 -1 275 434 76 42 443 274 74 42 2 495 70 42 421 475 68 43 275 480 71 42 403 70 80 46 493 475 58 48 170 86 76 80 88 315 77 53 373 288 66 53 493 475 58 48 358 429 59 55

@@ -1,15 +1,16 @@
 #include "Character.h"
-#include "EntityManager.h"
-#include "SceneManager.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
-Character::Character(EntityManager* l_entityMgr)
-	:Entity(l_entityMgr), 
-	m_spriteSheet(m_entityManager->getContext()->m_textureManager),
+Character::Character()
+	: Entity(), 
 	m_jumpVelocity(250), m_hitpoints(5){ m_name = "Character"; }
 
 Character::~Character(){ }
 
 void Character::move(const Direction& l_dir){
+	m_dir=l_dir;
 	if (getState() == EntityState::Dying){ return; }
 	m_spriteSheet.setDirection(l_dir);
 	if (l_dir == Direction::Left){ accelerate(-m_speed.x, 0); }
@@ -23,7 +24,7 @@ void Character::jump(){
 	addVelocity(0, -m_jumpVelocity);
 }
 
-void Character::getHurt(const int& l_damage){
+void Character::takeDamage(const int& l_damage){
 	if (getState() == EntityState::Dying || getState() == EntityState::Hurt){ return; }
 	m_hitpoints = (m_hitpoints - l_damage > 0 ? m_hitpoints - l_damage : 0);
 	if (m_hitpoints){ setState(EntityState::Hurt); }
@@ -72,7 +73,7 @@ void Character::load(const std::string& l_path){
 void Character::animate(){
 	EntityState state = getState();
 
-	if(state == EntityState::Walking && m_spriteSheet.
+    if(state == EntityState::Walking && m_spriteSheet.
 		getCurrentAnim()->getName() != "Walk"){
 		m_spriteSheet.setAnimation("Walk",true,true);
 	}  else if(state == EntityState::Hurt && m_spriteSheet.
@@ -90,47 +91,14 @@ void Character::animate(){
 	} else if(state == EntityState::Idle && m_spriteSheet.
 		getCurrentAnim()->getName() != "Idle"){
 		m_spriteSheet.setAnimation("Idle",true,true);
-	}
+	} else if(state == EntityState::Move && m_spriteSheet.
+		getCurrentAnim()->getName() != "Move"){
+		m_spriteSheet.setAnimation("Move",true,true);
+	} 
 }
 
 void Character::update(float l_dT){
-	Entity::update(l_dT);
-	/* if(m_attackAABB.width != 0 && m_attackAABB.height != 0){
-		UpdateAttackAABB();
-
-		// Debug.
-		if(m_entityManager->getContext()->m_debugOverlay.Debug()){
-			sf::RectangleShape* arect = new sf::RectangleShape(sf::Vector2f(m_attackAABB.width,m_attackAABB.height));
-			arect->setPosition(m_attackAABB.left,m_attackAABB.top);
-			arect->setFillColor(sf::Color(255,0,0,
-				(m_state == EntityState::Attacking && m_spriteSheet.getCurrentAnim()->IsInAction() 
-				? 200 : 100)));
-			m_entityManager->getContext()->m_debugOverlay.Add(arect);
-		}
-		// End debug.
-	} */
-	if(getState() != EntityState::Dying && getState() != EntityState::Hurt){
-		if(abs(m_velocity.y) >= 0.001f){
-			setState(EntityState::Jumping);
-		} else if(abs(m_velocity.x) >= 0.1f){
-			setState(EntityState::Walking);
-		} else {
-			setState(EntityState::Idle);
-		}
-	} else if(getState() == EntityState::Hurt){
-		if(!m_spriteSheet.getCurrentAnim()->isPlaying()){
-			setState(EntityState::Idle);
-		}
-	} else if(getState() == EntityState::Dying){
-		if(!m_spriteSheet.getCurrentAnim()->isPlaying()){
-			m_entityManager->remove(m_id);
-		}
-	}
-
-	animate();
-
-	m_spriteSheet.update(l_dT);
-	m_spriteSheet.setSpritePosition(m_position);
+    Entity::update(l_dT/100);
 }
 
 void Character::draw(sf::RenderWindow* l_wind){

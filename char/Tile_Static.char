@@ -1,0 +1,4 @@
+Name Tile_Static
+Spritesheet sheet/Tile_Static.sheet
+BoundingBox 150 158
+DamageBox 0 0 140 140

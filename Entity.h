@@ -1,18 +1,16 @@
 #ifndef ENTITY_H
 #define ENTITY_H
+#include <iostream>
 #include <SFML/Graphics.hpp>
-#include <SFML/System/Vector2.hpp>
-
-class EntityManager;
 
 enum class EntityType{ Base, Enemy, Player, Tile };
 
 enum class EntityState{ Idle, Walking, Jumping, Run, Hurt, Dying, Move, Water, Flag };
 
-using TileInfo = std::map<int, std::string>;
+//Map con un id del Tile, un nombre y sus coordenadas
+using TileInfo = std::map<unsigned int, std::pair<std::string,sf::Vector2f>>;
 
 class Entity {
-	friend class EntityManager;
 protected:
 	std::string m_name;
 	EntityType m_type;
@@ -24,17 +22,12 @@ protected:
 	sf::Vector2f m_speed; // Value of acceleration.
 	sf::Vector2f m_acceleration; // Current acceleration.
 	sf::Vector2f m_friction; // Default friction value.
-	TileInfo* m_referenceTile; // Tile underneath entity.
 	sf::Vector2f m_size; // Size of the collision box.
 	sf::FloatRect m_hitbox; // The bounding box for collisions.
 	EntityState m_state; // Current entity state.
 
-	EntityManager* m_entityManager;
-
-	virtual void readIn(std::stringstream& l_stream) = 0;
-	
 public:	
-	Entity(EntityManager* l_entityMgr);        			
+	Entity();
 	virtual ~Entity();
 	
 	const sf::Vector2f& getPosition() const;
@@ -48,6 +41,8 @@ public:
 	void setPosition(const sf::Vector2f& l_pos);
 	void setSize(float l_x, float l_y);
 	void setState(const EntityState& l_state);
+	void setId(int i);
+	void setName(std::string l_name);
 
 	void move(float l_x, float l_y);
 	void addVelocity(float l_x, float l_y);
@@ -57,25 +52,14 @@ public:
 	
 	sf::FloatRect getGlobalBounds();
 	bool collideWith(const Entity & ent2);
-	
-	void separate(sf::FloatRect overlap, const Entity & ent2);
-	
+			
 	sf::FloatRect checkCollision(Entity &b);
 	void updateHitbox();
 
-	virtual void onEntityCollision(Entity* l_collider, bool l_attack) = 0;
+	void onEntityCollision(Entity* l_collider, bool l_attack);
 	virtual void draw(sf::RenderWindow* l_wind) = 0;   
 	virtual void update(float l_dT);
 
-	
-	friend std::stringstream& operator >>(
-		std::stringstream& l_stream, Entity& a)
-	{
-		a.readIn(l_stream);
-		return l_stream;
-	}
-	
 };
 
 #endif
-

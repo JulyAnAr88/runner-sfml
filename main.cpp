@@ -1,19 +1,19 @@
 #include <SFML/Graphics.hpp>
 #include "Game.h"
-#include "Constants.h"
-#include <iostream>
+#include "GameScene.h"
+#include "IntroScene.h"
+#include "GameOverScene.h"
+#include "SharedContext.h"
+#include "ScoreScene.h"
 
 
 int main(int argc, char *argv[]){
-	{
-		Game &game = Game::create(sf::VideoMode(WIDTH,HEIGHT),"Carrera al bachi");
-		while(!game.getWindow()->isDone()){
-			game.update();
-			game.render();
-			game.lateUpdate();
-		}
-	}
-		
-	system("PAUSE");
+	SharedContext* m_context;
+	BaseScene *scene = new IntroScene();
+	//BaseScene *scene = new ScoreScene();
+	Game &g = Game::create(sf::VideoMode(WIDTH,HEIGHT), scene, "Carrera al bachi");
+	g.run();
+	
+	return 0;
 }
 

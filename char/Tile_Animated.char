@@ -1,0 +1,4 @@
+Name Tile_Animated
+Spritesheet sheet/Tile_Animated.sheet
+BoundingBox 95 110
+DamageBox 0 0 140 140

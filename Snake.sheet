@@ -1,6 +1,0 @@
-Texture EnemiesSprite
-Size 32 32
-Scale 0.5 0.5
-|Type|Name|StartFrame|EndFrame|Row|FrameTime|FrameActionStart|FrameActionEnd|
-AnimationType Untidy
-Animation Move 0 7 0 0.2 -1 -1 229 416 76 42 130 437 74 42 130 483 70 42 435 2 71 42 487 48 68 43 421 429 71 42 436 345 80 42 482 320 71 42

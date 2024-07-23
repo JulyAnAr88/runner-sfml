@@ -1,0 +1,8 @@
+Name Mosquito
+Spritesheet sheet/Mosquito.sheet
+Hitpoints 1
+BoundingBox 40 30
+DamageBox 0 0 10 10
+Speed 112 64
+JumpVelocity 128
+MaxVelocity 128 1024
