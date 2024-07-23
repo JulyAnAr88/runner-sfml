@@ -39,6 +39,8 @@ public:
 	sf::Vector2f getPlayerPosition();
 	sf::View getView();	
 	sf::FloatRect getViewSpace(sf::RenderWindow &l_window);
+	int getPoints();
+	std::string getTime();
 
 	void setView(sf::View &l_view);
 	bool playerIsDead();

@@ -7,8 +7,7 @@ SpriteSheet::SpriteSheet()
 
 SpriteSheet::~SpriteSheet(){ releaseSheet(); }
 
-void SpriteSheet::releaseSheet(){
-	//m_textureManager->releaseResource(m_texture);
+void SpriteSheet::releaseSheet(){	
 	m_animationCurrent = nullptr;
 	while(m_animations.begin() != m_animations.end()){
 		delete m_animations.begin()->second;
@@ -69,15 +68,10 @@ bool SpriteSheet::loadSheet(const std::string& l_file){
 				}
 				std::string texture;
 				keystream >> texture;
-				/* if (!m_textureManager->requireResource(texture)){
-					std::cerr << "! Could not set up the texture: " << texture << std::endl;
-					continue;
-				} */
 				m_texture = texture;
 				//std::cout<<"textura "<<m_texture<<std::endl;
 				sf::Texture *textura = new sf::Texture();
 				textura->loadFromFile(m_texture);
-				//m_sprite.setTexture(*m_textureManager->getResource(m_texture));
 				m_sprite.setTexture(*textura);
 			} else if(type == "Size"){
 				keystream >> m_spriteSize.x >> m_spriteSize.y;
@@ -157,15 +151,12 @@ bool SpriteSheet::loadTileSheet(const std::string& l_file){
 				}
 				std::string texture;
 				keystream >> texture;
-				/* if (!m_textureManager->requireResource(texture)){
-					std::cerr << "! Could not set up the texture: " << texture << std::endl;
-					continue;
-				} */
+				
 				m_texture = texture;
 				//std::cout<<"textura "<<m_texture<<std::endl;
 				sf::Texture *textura = new sf::Texture();
 				textura->loadFromFile(m_texture);
-				//m_sprite.setTexture(*m_textureManager->getResource(m_texture));
+				
 				m_sprite.setTexture(*textura);
 			} else if(type == "Size"){
 				keystream >> m_spriteSize.x >> m_spriteSize.y;

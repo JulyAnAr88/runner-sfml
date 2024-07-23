@@ -2,19 +2,20 @@
 #include "SharedContext.h"
 #include <cmath>
 
-HUD::HUD(TextureMap &l_tm) {	 
-	m_tm = &l_tm;
-	auto itr = m_tm->vm->find("HUD");
-    if(itr != m_tm->vm->end()){
-	    m_heart5.setTexture(*itr->second);
-    }		
-	//m_introSprite.setScale(0.65,0.65);
-	m_heart5.setOrigin(itr->second->getSize().x / 2.0f,
-							itr->second->getSize().y / 2.0f);
-	sf::FloatRect hearts = m_heart5.getLocalBounds();
-
-	m_heart5.setPosition(hearts.width *0.3, hearts.height *.3);
-
+HUD::HUD(TextureMap &l_tm) {	
+	/* 		load("sheet/HUD.sheet");
+	m_spriteSheet.setAnimation(0);:m_tm(&l_tm)
+	m_spriteSheet.setSpritePosition({m_spriteSheet.getSpriteSize().x*0.3, 
+		m_spriteSheet.getSpriteSize().y*0.5});
+   	m_spriteSheet.setSpriteSize({0.50,0.50});
+	*/
+	m_texHeart.loadFromFile("img/hud_heartFull.png");
+	m_heart5.setTexture(m_texHeart);
+	m_heart5.setScale(0.65,0.65);
+	sf::FloatRect heartRect = m_heart5.getLocalBounds();
+	m_heart5.setOrigin(heartRect.left + heartRect.width / 2.0f,
+		heartRect.top + heartRect.height / 2.0f);
+	m_heart5.setPosition((m_position.x * -0.5) + heartRect.width, heartRect.height *.75);
 
     m_scoreFont.loadFromFile("fonts/CompleteinHim.ttf");
 	m_scoreText.setFont(m_scoreFont);
@@ -54,8 +55,10 @@ void HUD::draw(sf::RenderWindow &w){
 	m_scorePrint.setPosition(m_position.x+m_scoreText.getGlobalBounds().width,
 		m_position.y);
 	m_scorePrint.setString(m_scoreToPrint);
+	m_heart5.setPosition(WIDTH-m_position.x*3, m_position.y);
     w.draw(m_scoreText);
     w.draw(m_scorePrint);
+	w.draw(m_heart5);
   
 }
 
@@ -102,10 +105,10 @@ int HUD::getScore(){
     return m_puntos;
 }
 
-void HUD::load(const std::string &l_path){
+/* void HUD::load(const std::string &l_path){
 
 	m_spriteSheet.loadTileSheet(l_path);
-}
+} */
 
 void HUD::setView(sf::View &l_view){
 	m_view = l_view;

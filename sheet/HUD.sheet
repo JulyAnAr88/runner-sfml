@@ -2,10 +2,10 @@ Texture img/HUD.png
 Size 32 32
 |id|name|friction x|friction y|deadly|scale|x|y|width|height|
 AnimationType None
-0 HeartFullx3 0 0 0 1 316 163 157 45
-1 HeartFullx2.5 0 0 0 1 2 303 157 45
-2 HeartFullx2 0 0 0 1 316 2 157 45
-3 HeartFullx1.5 0 0 0 1 267 2 157 45
-4 HeartFullx1 0 0 0 1 267 163 157 45
-5 HeartFullx0.5 0 0 0 1 218 51 157 45
-6 HeartFullx0 0 0 0 1 169 51 158 45
+0 HeartFullx3 0 0 0 0.05 4 4 316 90
+1 HeartFullx2h 0 0 0 0.3 4 102 316 90
+2 HeartFullx2 0 0 0 0.3 4 494 314 90
+3 HeartFullx1h 0 0 0 0.3 4 298 314 90
+4 HeartFullx1 0 0 0 0.3 4 396 314 90
+5 HeartFullx0h 0 0 0 0.3 4 200 314 90
+6 HeartFullx0 0 0 0 0.3 4 592 314 90

@@ -127,10 +127,10 @@ int Player::getHitpoints(){
 void Player::die(){
 	setState(EntityState::Dying);
 	animate();
-	Sleep(5000);
-	isDead = true;
+	//Sleep(5000);
+	//isDead = true;
 }
 
 bool Player::IsDead(){
-    return isDead;
+    return getState() == EntityState::Dying;
 }

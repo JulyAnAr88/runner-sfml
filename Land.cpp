@@ -12,7 +12,7 @@ Land::Land(TextureMap &l_textureMap): m_tM(&l_textureMap),
 	registerEntity<Enemy>(EntityType::Enemy);
 	registerEntity<Tile>(EntityType::Tile);
 
-	m_hud = new HUD();
+	m_hud = new HUD(*m_tM);
 }
 
 int Land::add(const EntityType &l_type, const std::string &l_name){
@@ -166,7 +166,7 @@ void Land::update(double elapsed,Game &g) {
 		
 		//Sleep(500); 
 
-		g.switchScene(new GameOverScene(m_hud->getScore(), m_hud->getTime(), this->m_view->getCenter()));
+		//g.switchScene(new GameOverScene(m_hud->getScore(), m_hud->getTime(), this->m_view->getCenter()));
 		
 	}
 }
@@ -222,6 +222,15 @@ sf::FloatRect Land::getViewSpace(sf::RenderWindow &l_window){
 	sf::Vector2f viewSizeHalf(viewSize.x / 2, viewSize.y / 2);
 	sf::FloatRect viewSpace(viewCenter - viewSizeHalf, viewSize);
 	return viewSpace;
+}
+
+int Land::getPoints(){
+    return m_hud->getScore();
+}
+
+std::string Land::getTime()
+{
+    return m_hud->getTime();
 }
 
 void Land::loadMap(const std::string &l_path){
@@ -360,7 +369,6 @@ void Land::remove(int l_id){
 
 Land::~Land(){
 	purgeMap();
-	delete m_hud;
 }
 
 void Land::purgeMap(){

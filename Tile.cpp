@@ -47,9 +47,7 @@ void Tile::update(float l_dT){
 	if(m_animId == 27){
 		setState(EntityState::Water);
 	} else if(m_animId > 27){
-		//if(!m_spriteSheet.getCurrentAnim()->isPlaying()){
-			setState(EntityState::Flag);
-		//}	
+		setState(EntityState::Flag);
 	}
 
 	animate();

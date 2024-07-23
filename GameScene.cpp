@@ -37,7 +37,11 @@ void GameScene::update(const sf::Time& l_time, Game &g){
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F1)){
 		//IntroScene *is = new IntroScene(m_view->getCenter());
 		//is->onCreate(*m_tm);
-		g.switchScene(new IntroScene());
+		g.switchScene(new IntroScene(m_view->getCenter()));
+	}
+	if(m_terreno->playerIsDead()){
+		g.switchScene(new GameOverScene(m_terreno->getPoints(),m_terreno->getTime(),m_view->getCenter()));
+		
 	}
 	
 }
@@ -59,6 +63,6 @@ void GameScene::processEvent(const sf::Event &e){
 }
 
 GameScene::~GameScene(){
-	delete m_hud;
-	delete m_terreno;
+	//delete m_hud;
+	//delete m_terreno;
 }

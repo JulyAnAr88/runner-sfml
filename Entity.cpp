@@ -66,7 +66,7 @@ void Entity::accelerate(float l_x, float l_y){
 	m_acceleration += sf::Vector2f(l_x,l_y);
 }
 
-void Entity::applyFriction(float l_x, float l_y){
+ void Entity::applyFriction(float l_x, float l_y){
 	if(m_velocity.x != 0){
 		if(abs(m_velocity.x) - abs(l_x) < 0){ m_velocity.x = 0; }
 		else {
@@ -84,7 +84,7 @@ void Entity::applyFriction(float l_x, float l_y){
 	}
 }
 
-/* bool Entity::collideWith(const Entity & ent2) {
+/*bool Entity::collideWith(const Entity & ent2) {
 	auto r1 = this->getGlobalBounds();
 	auto r2 = ent2.getGlobalBounds();
 	return r1.intersects(r2);

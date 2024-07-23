@@ -2,6 +2,7 @@
 #define HUD_H
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics.hpp>
+#include "SpriteSheet.h"
 #include "BaseScene.h"
 
 class HUD{
@@ -19,7 +20,7 @@ public:
 
 	std::string getTime();
 	int getScore();
-	void load(const std::string& l_path);
+	//void load(const std::string& l_path);
 private:
 
 	sf::View m_view;
@@ -30,6 +31,7 @@ private:
 	sf::Clock m_clock;
 	std::string m_timer;
 
+	sf::Texture m_texHeart;
 	sf::Sprite m_heart0, m_heart1,
 	m_heart2, m_heart3, m_heart4,m_heart5;
 
@@ -38,8 +40,8 @@ private:
 	int m_hitpointsPlayer;
 	int m_puntos = 0;
 
-	TextureMap *m_tm;
-	SpriteSheet m_spriteSheet;
+	/* TextureMap *m_tm;
+	SpriteSheet m_spriteSheet; */
 };
 
 #endif
