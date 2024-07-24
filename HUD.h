@@ -11,7 +11,7 @@ public:
 
 	void setView(sf::View &l_view);
 
-	void update(double elapsed);
+	void update(double elapsed, int hp);
 	void draw(sf::RenderWindow &w);
 	void processEvent(const sf::Event &e);
 
@@ -26,8 +26,10 @@ private:
 	sf::View m_view;
 	sf::Font m_scoreFont;
 	sf::Text m_scorePrint;
+	sf::Text m_healthPrint;
 	std::string m_scoreToPrint;
 	sf::Text m_scoreText;
+	sf::Text m_healthText;
 	sf::Clock m_clock;
 	std::string m_timer;
 

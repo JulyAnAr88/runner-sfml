@@ -16,7 +16,7 @@ struct Tabla{
 
 class GameOverScene : public BaseScene{
 public:
-	GameOverScene(int l_score, std::string l_time, sf::Vector2f l_centerView);
+	GameOverScene(int l_score, std::string l_time, bool exito,sf::Vector2f l_centerView);
 	~GameOverScene();
 
 	void onCreate(TextureMap &l_textureMap);
@@ -41,6 +41,8 @@ private:
 	std::string m_newName, m_newTime;
 	std::vector<sf::Text> m_toPrint;
 	std::vector<Tabla> m_vTabla;
+
+	sf::Music m_music;
 
 	char pos0='-';
 	char pos1='-';

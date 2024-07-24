@@ -2,6 +2,7 @@
 #define GAMESCENE_H
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/Texture.hpp>
+#include <SFML/Audio/Music.hpp>
 #include <vector>
 #include <map>
 #include "Game.h"
@@ -24,7 +25,8 @@ public:
 
 	~GameScene();
 protected:
-	
+	sf::Music m_music;
+
 	Land* m_terreno;
 
 	int m_puntos = 0;		

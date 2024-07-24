@@ -44,6 +44,7 @@ public:
 
 	void setView(sf::View &l_view);
 	bool playerIsDead();
+	bool exito();
 	
 	void update(double elapsed,Game &g);
 	void draw(sf::RenderWindow &w);
@@ -76,6 +77,9 @@ private:
 
 	int m_idTiles = 0;
 	int m_idEntities = 0;
+
+	int m_cantEnemies = 0;
+	bool m_exito;
 
 	EntityContainer m_entities;
 	Player* m_player;

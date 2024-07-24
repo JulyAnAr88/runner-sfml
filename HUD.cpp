@@ -15,7 +15,7 @@ HUD::HUD(TextureMap &l_tm) {
 	sf::FloatRect heartRect = m_heart5.getLocalBounds();
 	m_heart5.setOrigin(heartRect.left + heartRect.width / 2.0f,
 		heartRect.top + heartRect.height / 2.0f);
-	m_heart5.setPosition((m_position.x * -0.5) + heartRect.width, heartRect.height *.75);
+	//m_heart5.setPosition((m_position.x * -0.5) + heartRect.width, heartRect.height *.75);
 
     m_scoreFont.loadFromFile("fonts/CompleteinHim.ttf");
 	m_scoreText.setFont(m_scoreFont);
@@ -34,19 +34,36 @@ HUD::HUD(TextureMap &l_tm) {
 	m_scorePrint.setString(m_scoreToPrint);
 	m_scorePrint.setCharacterSize(45);
 	m_scorePrint.setStyle(sf::Text::Bold);
-	m_scorePrint.setPosition(300,8.7);
+	//m_scorePrint.setPosition(300,8.7);
 	m_scorePrint.setColor(sf::Color::White);
 	m_scorePrint.setOrigin(textRect.left + textRect.width / 2.0f,
+		textRect.top + textRect.height / 2.0f);
+	
+	m_healthText.setFont(m_scoreFont);
+	m_healthText.setString(sf::String("x"));
+	m_healthText.setCharacterSize(45);
+	m_healthText.setFillColor(sf::Color::White);
+	sf::FloatRect healthRect = m_healthText.getLocalBounds();
+	m_healthText.setOrigin(healthRect.left + healthRect.width / 2.0f,
+		healthRect.top + healthRect.height / 2.0f);
+	/* m_scoreText.setPosition(m_introSprite.getPosition().x, 
+		m_introSprite.getPosition().y + textureMgr->getResource("Intro")->getSize().y / 1.5f); */
+    m_healthText.setPosition(WIDTH - textRect.width *3, textRect.height*2.5);
+	
+	m_healthPrint.setFont(m_scoreFont);
+	m_healthPrint.setCharacterSize(45);
+	m_healthPrint.setStyle(sf::Text::Bold);
+	//m_healthPrint.setPosition(300,8.7);
+	m_healthPrint.setColor(sf::Color::White);
+	m_healthPrint.setOrigin(textRect.left + textRect.width / 2.0f,
 		textRect.top + textRect.height / 2.0f);
 }
 
 
-void HUD::update(double elapsed){
+void HUD::update(double elapsed, int hp){
 	m_puntos += elapsed;
-	//std::cout<<m_puntos<<" puntos"<<std::endl;
 	m_scoreToPrint = getTime();
-
-
+	m_healthPrint.setString(std::to_string(hp));
 
 }
 
@@ -55,9 +72,16 @@ void HUD::draw(sf::RenderWindow &w){
 	m_scorePrint.setPosition(m_position.x+m_scoreText.getGlobalBounds().width,
 		m_position.y);
 	m_scorePrint.setString(m_scoreToPrint);
-	m_heart5.setPosition(WIDTH-m_position.x*3, m_position.y);
+	m_heart5.setPosition(m_position.x-m_scoreText.getGlobalBounds().width*6.25, 
+		m_position.y);
+	m_healthText.setPosition(m_position.x-m_scoreText.getGlobalBounds().width*5.95, 
+		m_position.y);
+	m_healthPrint.setPosition(m_position.x-m_scoreText.getGlobalBounds().width*5.5, 
+		m_position.y);
     w.draw(m_scoreText);
     w.draw(m_scorePrint);
+    w.draw(m_healthText);
+    w.draw(m_healthPrint);
 	w.draw(m_heart5);
   
 }
@@ -74,7 +98,6 @@ void HUD::setPlayerHP(int l_hp){
 }
 
 std::string HUD::getTime(){
-
 	
 	sf::Time time = m_clock.getElapsedTime();
 	int secsPass = floor(time.asSeconds());

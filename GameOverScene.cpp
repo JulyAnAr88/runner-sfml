@@ -10,8 +10,22 @@ bool ordenarPtos(Tabla a, Tabla b){
     return (a.puntos>b.puntos);
 };
 
-GameOverScene::GameOverScene(int l_score, std::string l_time, sf::Vector2f l_centerView) 
+GameOverScene::GameOverScene(int l_score, std::string l_time, bool exito, sf::Vector2f l_centerView) 
     :BaseScene(), m_newScore( l_score), m_newTime (l_time){
+		if(exito){
+			m_gameOver.setString(sf::String("Juego terminado"));
+			m_music.openFromFile("sounds/victory.ogg");
+			m_music.setVolume(50);
+			m_music.setLoop(true);
+			m_music.play();
+
+		} else {
+			m_gameOver.setString(sf::String("Intentalo de nuevo"));
+			m_music.openFromFile("sounds/gameover.ogg");
+			m_music.setVolume(50);
+			m_music.setLoop(true);
+			m_music.play();
+		}
    this->m_view = new sf::View(sf::FloatRect(0.f, 0.f, WIDTH, HEIGHT));
    this->m_view->setCenter(l_centerView);
     }
@@ -27,7 +41,6 @@ void GameOverScene::onCreate(TextureMap &l_textureMap){
 
 	m_gameOver.setFont(m_fontGameOver);
 	//m_gameOver.setFont(getFontB());
-	m_gameOver.setString(sf::String("Juego terminado"));
 	m_gameOver.setCharacterSize(65);
 	m_gameOver.setFillColor(sf::Color::Red);
 	sf::FloatRect textRectTitle = m_gameOver.getLocalBounds();

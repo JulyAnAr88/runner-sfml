@@ -70,11 +70,26 @@ void Land::update(double elapsed,Game &g) {
 		if (e.second->getName()=="Tile_Static"){
 			sf::FloatRect overlap = m_player->checkCollision(*e.second);
 			Tile* te = (Tile*) e.second;		
+			if(te->getAnimId() == 24){
+				if(overlap != nulo){
+					std::cout<<" bachi "<<std::endl;
+					Sleep(1000);
+					m_exito = true;
+					/* m_redFlag = add(EntityType::Tile,"Tile_Animated");
+					findEntity(m_redFlag)->setPosition(te->getPosition());
+					remove(e.first); */
+				}
+			}
+		}
+
+		if (e.second->getName()=="Tile_Static"){
+			sf::FloatRect overlap = m_player->checkCollision(*e.second);
+			Tile* te = (Tile*) e.second;		
 			if(te->getAnimId() == 26){
 				if(overlap != nulo){
-					m_redFlag = add(EntityType::Tile,"Tile_Animated");
-					findEntity(m_redFlag)->setPosition(te->getPosition());
-					remove(e.first);
+					/* m_redFlag = add(EntityType::Tile,"Tile_Animated");
+					findEntity(m_redFlag)->setPosition(te->getPosition()); */
+					remove(e.first); 
 				}
 			}
 		}
@@ -83,11 +98,10 @@ void Land::update(double elapsed,Game &g) {
 			Tile* te = (Tile*) e.second;		
 			if(te->getAnimId() == 25){
 				if(overlap != nulo){
-					m_greenFlag = add(EntityType::Tile,"Tile_Animated");
+					/* m_greenFlag = add(EntityType::Tile,"Tile_Animated");
 					findEntity(m_greenFlag);
-					te->setPosition(te->getPosition());
-					te->setAnimId(29);  
-					remove(e.first);
+					remove(e.first); */
+					std::cout<<" bandera "<<std::endl;
 				}
 			}
 		}
@@ -97,6 +111,7 @@ void Land::update(double elapsed,Game &g) {
 			//if(te->getAnimId() == 27){
 				if(overlap != nulo){
 				std::cout<<" enemy "<<en->getName()<<std::endl;
+				m_player->separate(overlap,*e.second);
 				/* std::cout<<" width "<<overlap.width
 				<<" height "<<overlap.height<<std::endl;	 */
 					m_player->takeDamage(en->hurt());
@@ -150,9 +165,8 @@ void Land::update(double elapsed,Game &g) {
 		m_timePassedObject = 0;
 	}
 	m_background.setPosition(m_view->getCenter().x-WIDTH/2,0);
-	m_hud->setPlayerHP(m_player->getHitpoints());
 	m_hud->setPosition(m_view->getCenter().x+WIDTH*0.33,HEIGHT*0.08);
-	m_hud->update(elapsed);
+	m_hud->update(elapsed, m_player->getHitpoints());
 
 	for(const auto& e: m_entities){
 		bool lejos = e.second->getPosition().x+WIDTH < m_player->getPosition().x;
@@ -198,11 +212,11 @@ void Land::draw(sf::RenderWindow &w){
 		te->draw(&w);
 	}
 
-	if(m_redFlag !=0){		
+	/* if(m_redFlag !=0){		
 		Tile* te = (Tile*)findEntity(m_redFlag);
 		te->setAnimId(29); 
 		te->draw(&w);
-	}
+	} */
 	for(const auto& e: m_entities){
 		if (e.second->getType() == EntityType::Player || 
 			e.second->getType() == EntityType::Enemy){			
@@ -360,6 +374,10 @@ void Land::setView(sf::View &l_view){
 
 bool Land::playerIsDead(){
     return m_player->IsDead();
+}
+
+bool Land::exito(){
+    return m_exito;
 }
 
 void Land::remove(int l_id){

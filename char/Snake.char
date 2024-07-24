@@ -1,8 +1,8 @@
 Name Snake
 Spritesheet sheet/Snake.sheet
 Hitpoints 2
-BoundingBox 40 40
-DamageBox 0 0 10 10
+BoundingBox 80 80
+DamageBox 0 0 50 50
 Speed 112 64
 JumpVelocity 128
 MaxVelocity 128 1024

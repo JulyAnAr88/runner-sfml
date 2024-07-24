@@ -11,12 +11,16 @@ GameScene::GameScene() : BaseScene(){
 }
 
 void GameScene::onCreate(TextureMap &l_textureMap){
+	m_music.openFromFile("sounds/Chamarrito.ogg");
+	m_music.setVolume(50);
+	m_music.setLoop(true);
+	m_music.play();
 	m_tm = &l_textureMap;
 	this->m_view = new sf::View(sf::FloatRect(0, 0.f, WIDTH, HEIGHT));
 	m_terreno = new Land(l_textureMap);
 	m_terreno->setView(*m_view);
 	m_terreno->loadMap("varios/map1.map");
-
+	
 }
 
 void GameScene::onDestroy(){
@@ -39,8 +43,8 @@ void GameScene::update(const sf::Time& l_time, Game &g){
 		//is->onCreate(*m_tm);
 		g.switchScene(new IntroScene(m_view->getCenter()));
 	}
-	if(m_terreno->playerIsDead()){
-		g.switchScene(new GameOverScene(m_terreno->getPoints(),m_terreno->getTime(),m_view->getCenter()));
+	if(m_terreno->playerIsDead() || m_terreno->exito()){
+		g.switchScene(new GameOverScene(m_terreno->getPoints(),m_terreno->getTime(),m_terreno->exito(),m_view->getCenter()));
 		
 	}
 	
@@ -48,12 +52,12 @@ void GameScene::update(const sf::Time& l_time, Game &g){
 
 void GameScene::draw(sf::RenderWindow &w){
 	w.clear();
-
+	
 	m_terreno->draw(w);
 	//m_hud->draw(w);
 	
 	w.setView(*m_view);
-		
+	
 	//w.display();
 	
 }
@@ -65,4 +69,5 @@ void GameScene::processEvent(const sf::Event &e){
 GameScene::~GameScene(){
 	//delete m_hud;
 	//delete m_terreno;
+	m_music.stop();
 }

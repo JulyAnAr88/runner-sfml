@@ -23,8 +23,8 @@ void ScoreScene::onCreate(TextureMap &l_textureMap){
 
 	m_introSprite.setPosition(WIDTH / 2.0f, HEIGHT / 2.0f);
     
-   m_font.loadFromFile("CompleteinHim.ttf");
-    m_fontPuntaje.loadFromFile("BowlbyOneSC-Regular.otf");
+   m_font.loadFromFile("fonts/CompleteinHim.ttf");
+    m_fontPuntaje.loadFromFile("fonts/BowlbyOneSC-Regular.otf");
 
     m_puntaje.setFont(getFontB());
     //m_puntaje.setFont(m_fontPuntaje);

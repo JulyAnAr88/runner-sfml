@@ -25,7 +25,7 @@ AnimationType None
 20 Tree_3 0.8 0 0 1 405 3 282 275
 21 Bush 0 0 0 5.5 405 284 133 65
 22 Stone 0.8 0 0 5.5 271 862 109 65
-23 Sign 0 0 0 1 603 460 62 64
+23 Sign 0 0 0 1.3 603 460 62 64
 24 Bachi 0 0 0 1 3 3 396 361
 25 flagGreenHanging 0 0 0 1.2 364 370 26 140
 26 flagRedHanging 0 0 0 1.2 437 516 26 140
