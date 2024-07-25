@@ -33,6 +33,8 @@ public:
 	sf::Texture *load(const std::string &l_path);
 	void loadTextures();
 	void loadPaths(const std::string &l_pathFile);
+
+	sf::View &getView();
 	
 	// Para el sistema de puntajes
 	void InitHighScore();//passes the data from the Tanto file to a vector of scores
@@ -52,7 +54,7 @@ private:
 	sf::RenderWindow m_window;
 	sf::Event m_ev;
 	sf::Clock m_clock;
-	sf::View m_view;
+	sf::View *m_view;
 	
 	BaseScene *m_current_scene, *m_next_scene = nullptr;
 	SharedContext *m_context;

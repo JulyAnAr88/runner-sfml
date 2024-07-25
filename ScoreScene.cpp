@@ -3,7 +3,7 @@
 ScoreScene::ScoreScene(sf::Vector2f l_centerView) : 
     BaseScene() {
 	this->m_view = new sf::View(sf::FloatRect(0.f, 0.f, WIDTH, HEIGHT));
-    this->m_view->setCenter(l_centerView);
+    //this->m_view->setCenter(l_centerView);
 }
 
 ScoreScene::ScoreScene() : 
@@ -163,6 +163,7 @@ void ScoreScene::readTabla(){
 }
 
 void ScoreScene::update(const sf::Time &l_time, Game &g){
+    *this->m_view = g.getView();
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
         
 		g.switchScene(new IntroScene(m_view->getCenter()));

@@ -63,7 +63,7 @@ HUD::HUD(TextureMap &l_tm) {
 void HUD::update(double elapsed, int hp){
 	m_puntos += elapsed;
 	m_scoreToPrint = getTime();
-	m_healthPrint.setString(std::to_string(hp));
+	m_healthPrint.setString(std::to_string(floor(hp/4)));
 
 }
 
@@ -76,7 +76,7 @@ void HUD::draw(sf::RenderWindow &w){
 		m_position.y);
 	m_healthText.setPosition(m_position.x-m_scoreText.getGlobalBounds().width*5.95, 
 		m_position.y);
-	m_healthPrint.setPosition(m_position.x-m_scoreText.getGlobalBounds().width*5.5, 
+	m_healthPrint.setPosition(m_position.x-m_scoreText.getGlobalBounds().width*5.35, 
 		m_position.y);
     w.draw(m_scoreText);
     w.draw(m_scorePrint);

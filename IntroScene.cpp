@@ -5,7 +5,7 @@
 
 IntroScene::IntroScene(sf::Vector2f l_centerView)
 	: BaseScene(){
-		m_view->setCenter(l_centerView);
+		//m_view->setCenter(l_centerView);
 	}
 
 IntroScene::IntroScene()
@@ -63,6 +63,7 @@ void IntroScene::processEvent(const sf::Event &e){
 }
 
 void IntroScene::update(const sf::Time& l_time, Game &g){
+	*this->m_view = g.getView();
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)){
        g.switchScene(new GameScene());	    
        //g.switchScene(new ScoreScene());	    

@@ -52,7 +52,7 @@ void Land::update(double elapsed,Game &g) {
 		if (e.second->getName()=="Tile_Static"){
 			sf::FloatRect overlap = m_player->checkCollision(*e.second);
 			Tile* te = (Tile*) e.second;
-			if(te->getAnimId()<17){
+			if(te->getAnimId() >0 && te->getAnimId()<19){
 				if(overlap != nulo){
 					m_player->separate(overlap,*e.second);
 				}
@@ -73,11 +73,8 @@ void Land::update(double elapsed,Game &g) {
 			if(te->getAnimId() == 24){
 				if(overlap != nulo){
 					std::cout<<" bachi "<<std::endl;
-					Sleep(1000);
+					Sleep(500);
 					m_exito = true;
-					/* m_redFlag = add(EntityType::Tile,"Tile_Animated");
-					findEntity(m_redFlag)->setPosition(te->getPosition());
-					remove(e.first); */
 				}
 			}
 		}
@@ -87,8 +84,8 @@ void Land::update(double elapsed,Game &g) {
 			Tile* te = (Tile*) e.second;		
 			if(te->getAnimId() == 26){
 				if(overlap != nulo){
-					/* m_redFlag = add(EntityType::Tile,"Tile_Animated");
-					findEntity(m_redFlag)->setPosition(te->getPosition()); */
+					m_redFlag = add(EntityType::Tile,"Tile_Animated");
+					findEntity(m_redFlag)->setPosition(te->getPosition());
 					remove(e.first); 
 				}
 			}
@@ -98,29 +95,23 @@ void Land::update(double elapsed,Game &g) {
 			Tile* te = (Tile*) e.second;		
 			if(te->getAnimId() == 25){
 				if(overlap != nulo){
-					/* m_greenFlag = add(EntityType::Tile,"Tile_Animated");
+					m_greenFlag = add(EntityType::Tile,"Tile_Animated");
 					findEntity(m_greenFlag);
-					remove(e.first); */
-					std::cout<<" bandera "<<std::endl;
+					remove(e.first);
 				}
 			}
 		}
 		if (e.second->getType() == EntityType::Enemy){
 			sf::FloatRect overlap = m_player->checkCollision(*e.second);
-			Enemy* en = (Enemy*) e.second;
-			//if(te->getAnimId() == 27){
-				if(overlap != nulo){
-				std::cout<<" enemy "<<en->getName()<<std::endl;
-				m_player->separate(overlap,*e.second);
-				/* std::cout<<" width "<<overlap.width
-				<<" height "<<overlap.height<<std::endl;	 */
-					m_player->takeDamage(en->hurt());
-					if(m_player->getHitpoints()== 0){
-						m_player->die();
-					}
-				//	std::cout<<" hp "<<m_player->getHitpoints()<<std::endl;
+			if(overlap != nulo){
+				Enemy* en = (Enemy*) e.second;
+				//std::cout<<" enemy "<<en->getName()<<std::endl;
+				m_player->separate(overlap,*en);
+				m_player->takeDamage(en->hurt());
+				if(m_player->getHitpoints()== 0){
+					m_player->die();
 				}
-			//}
+			}
 		}
 
 
@@ -135,13 +126,15 @@ void Land::update(double elapsed,Game &g) {
 
 	if(m_timePassedMosquito > SPAWNING_TIME_MOSQUITO){		
 		int enemyId = add(EntityType::Enemy,"Mosquito");
-		findEntity(enemyId)->setPosition(m_view->getCenter().x*2,m_view->getCenter().y);
+		findEntity(enemyId)->setPosition(m_view->getCenter().x*2, m_view->getCenter().y);
 		m_timePassedMosquito = 0;
+		m_cantEnemies +=1;
 	}
 	if(m_timePassedSnake > SPAWNING_TIME_SERPIENTE){		
 		int enemyId = add(EntityType::Enemy,"Snake");
-		findEntity(enemyId)->setPosition(m_view->getCenter().x*2,m_view->getSize().y*11.2/12);
+		findEntity(enemyId)->setPosition(m_view->getCenter().x*2, m_view->getSize().y*11.2/12);
 		m_timePassedSnake = 0;
+		m_cantEnemies +=1;
 	}
 
 	if(m_timePassedObject > SPAWNING_TIME_ARBUSTO){		
@@ -151,19 +144,36 @@ void Land::update(double elapsed,Game &g) {
 		int random = rand() % 2;
 		sf::Vector2f coords(m_view->getSize().x*2,100);
 		if(random == 0){
-			m_tilesMap.emplace(objectId,std::make_pair(22,coords));
-			/* tile->setAnimId(22);
+			tile->setAnimId(22);
 			tile->setPosition(coords);
-			//tile->draw(&w); */
 		}else{
-			/* tile->setAnimId(21);
+			tile->setAnimId(21);
 			tile->setPosition(coords);
-			//tile->draw(&w); */
-			m_tilesMap.emplace(objectId,std::make_pair(21,coords));
 		}
-		tile->setPosition(m_view->getCenter().x*2,m_view->getCenter().y*9/12);
+		tile->setPosition(m_view->getCenter().x*2, m_view->getSize().y*9.8/12);
+		m_tiles.push_back(tile);
 		m_timePassedObject = 0;
 	}
+
+	if(m_timePassedObstacle > SPAWNING_TIME_ROCA){		
+		int objectId = add(EntityType::Tile,"Tile_Static");
+		Tile * tile = (Tile *) findEntity(objectId);
+		//17 18		
+		int random = rand() % 2;
+		sf::Vector2f coords(m_view->getSize().x*2,100);
+		if(random == 0){
+			tile->setAnimId(18);
+			tile->setPosition(coords);
+		}else{
+			tile->setAnimId(17);
+			tile->setPosition(coords);
+		}
+		tile->setPosition(m_view->getCenter().x*2, m_view->getSize().y*9.5/12);
+		m_tiles.push_back(tile);
+		m_timePassedObstacle = 0;
+	}
+
+
 	m_background.setPosition(m_view->getCenter().x-WIDTH/2,0);
 	m_hud->setPosition(m_view->getCenter().x+WIDTH*0.33,HEIGHT*0.08);
 	m_hud->update(elapsed, m_player->getHitpoints());
@@ -171,24 +181,20 @@ void Land::update(double elapsed,Game &g) {
 	for(const auto& e: m_entities){
 		bool lejos = e.second->getPosition().x+WIDTH < m_player->getPosition().x;
 		if(lejos){
-			remove(e.first);
+			if(e.second->getName()!="Tile_Animated"){
+				//std::cout<<"to remove "<<e.second->getName()<<std::endl; 
+				remove(e.first);
+			}
+			//remove(e.first);
 		}
 	}
 	processRemovals();
 
-	if (m_player->IsDead()){
-		
-		//Sleep(500); 
-
-		//g.switchScene(new GameOverScene(m_hud->getScore(), m_hud->getTime(), this->m_view->getCenter()));
-		
-	}
 }
 
 void Land::draw(sf::RenderWindow &w){
 
 	w.draw(m_background);	
-	//std::cout<<"arbusto "<<m_entities.size()<<std::endl; 
 
 	for(const auto& e: m_entities){
 		if (e.second->getType() != EntityType::Player || 
@@ -206,21 +212,25 @@ void Land::draw(sf::RenderWindow &w){
 		}
 	}
 
+	for(const auto& t:m_tiles){
+		//t->setPosition(m_view->getCenter().x*2,m_view->getSize().y*9.2/12);
+		t->draw(&w);
+	}
+
 	if(m_greenFlag !=0){
 		Tile* te = (Tile*)findEntity(m_greenFlag);
 		te->setAnimId(28); 
 		te->draw(&w);
 	}
 
-	/* if(m_redFlag !=0){		
+	if(m_redFlag !=0){		
 		Tile* te = (Tile*)findEntity(m_redFlag);
 		te->setAnimId(29); 
 		te->draw(&w);
-	} */
+	}
 	for(const auto& e: m_entities){
 		if (e.second->getType() == EntityType::Player || 
 			e.second->getType() == EntityType::Enemy){			
-			//std::cout<<"scale "<<e.second->getGlobalBounds().width<<std::endl;
 			e.second->draw(&w);
 		}
 	}
@@ -239,7 +249,7 @@ sf::FloatRect Land::getViewSpace(sf::RenderWindow &l_window){
 }
 
 int Land::getPoints(){
-    return m_hud->getScore();
+    return m_cantEnemies;
 }
 
 std::string Land::getTime()
@@ -381,6 +391,8 @@ bool Land::exito(){
 }
 
 void Land::remove(int l_id){
+/* 	std::cout<<"to delete "<<l_id<<std::endl; 
+	std::cout<<"to delete redf "<<m_redFlag<<std::endl;  */
     to_delete.push_back(l_id);
 }
 
@@ -401,9 +413,13 @@ void Land::processRemovals(){
 		unsigned int id = to_delete.back();
 		auto itr = m_entities.find(id);
 		if(itr != m_entities.end()){
-			std::cout << "Discarding entity: " << itr->second->getId() << std::endl;
-			delete itr->second;
-			m_entities.erase(itr);
+		//std::cout<<"process removal pre if "<<itr->second->getName()<<std::endl; 
+		if(itr->second->getName()=="Tile_Animated"){
+		//std::cout<<"process removal in if "<<itr->second->getName()<<std::endl; 
+				std::cout << "Discarding entity: " << itr->second->getId() << std::endl;
+				delete itr->second;
+				m_entities.erase(itr);
+		}
 		}
 		to_delete.pop_back();
 	}

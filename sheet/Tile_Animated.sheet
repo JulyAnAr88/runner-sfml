@@ -2,6 +2,6 @@ Texture img/tilesheet.png
 Size 32 32
 |id|name|friction x|friction y|deadly|StartFrame|EndFrame|FrameTime|FrameActionStart|FrameActionEnd|scale|x|y|width|height|
 AnimationType Untidy
-27 Water 1.0 0 1 0 0 1 1 -1 -1 0.75 544 284 128 99 469 389 128 99
+27 Water 1.0 0 1 0 0 1 1 -1 -1 0.755 544 284 128 99 469 389 128 99
 28 Flag 0 0 0 0 0 1 0.2 -1 -1 1.1 364 516 67 140 396 370 67 140
 29 Flag 0 0 0 0 0 1 0.2 -1 -1 1.1 291 370 67 140 291 516 67 140

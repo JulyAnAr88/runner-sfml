@@ -28,6 +28,7 @@ GameOverScene::GameOverScene(int l_score, std::string l_time, bool exito, sf::Ve
 		}
    this->m_view = new sf::View(sf::FloatRect(0.f, 0.f, WIDTH, HEIGHT));
    this->m_view->setCenter(l_centerView);
+		std::cout<<"center gameOverscene "<<m_view->getCenter().x<<" "<<m_view->getCenter().y<<std::endl;
     }
 
 GameOverScene::~GameOverScene(){ 
@@ -46,37 +47,34 @@ void GameOverScene::onCreate(TextureMap &l_textureMap){
 	sf::FloatRect textRectTitle = m_gameOver.getLocalBounds();
 	m_gameOver.setOrigin(textRectTitle.left + textRectTitle.width / 2.0f,
 		textRectTitle.top + textRectTitle.height / 2.0f);
-	/* m_gameOver.setPosition(m_introSprite.getPosition().x, 
-		m_introSprite.getPosition().y + textureMgr->getResource("Intro")->getSize().y ); */
-	//m_gameOver.setPosition(WIDTH / 2.0f, HEIGHT / 6.5f);
 	m_gameOver.setPosition(this->m_view->getCenter().x,HEIGHT * 1.5/12);
     m_toPrint.push_back(m_gameOver);
 	
 	m_textTime.setFont(getFontC());
 	m_textTime.setCharacterSize(45);
     m_textTime.setFillColor(sf::Color::Red);
-	m_textTime.setPosition(this->m_view->getCenter().x * 7/8,HEIGHT * 3/12);
+	m_textTime.setPosition(this->m_view->getCenter().x- WIDTH * 1/5,HEIGHT * 3/12);
 	m_textTime.setString("Tu tiempo fue: ");
     m_toPrint.push_back(m_textTime);
 
 	m_time.setFont(getFontC());
 	m_time.setCharacterSize(45);
     m_time.setFillColor(sf::Color::Red);
-	m_time.setPosition(this->m_view->getCenter().x * 1.08,HEIGHT * 3/12);
+	m_time.setPosition(this->m_view->getCenter().x + WIDTH * 1/8,HEIGHT * 3/12);
 	m_time.setString(m_newTime);
     m_toPrint.push_back(m_time);
 	
     m_textScore.setFont(getFontC());
 	m_textScore.setCharacterSize(45);
     m_textScore.setFillColor(sf::Color::Red);
-	m_textScore.setPosition(this->m_view->getCenter().x* 7/8,HEIGHT * 4/12);
+	m_textScore.setPosition(this->m_view->getCenter().x- WIDTH * 1/5,HEIGHT * 4/12);
 	m_textScore.setString("Tu puntaje es: ");
     m_toPrint.push_back(m_textScore);
 
 	m_score.setFont(getFontC());
 	m_score.setCharacterSize(45);
     m_score.setFillColor(sf::Color::Red);
-	m_score.setPosition(this->m_view->getCenter().x * 1.08,HEIGHT * 4/12);
+	m_score.setPosition(this->m_view->getCenter().x + WIDTH * 1/8,HEIGHT * 4/12);
 	m_score.setString(std::to_string(m_newScore));
     m_toPrint.push_back(m_score);
 
@@ -91,23 +89,23 @@ void GameOverScene::onCreate(TextureMap &l_textureMap){
     m_toPrint.push_back(m_textName);
 	
     m_pos0.setFont(getFontC());
-	m_pos0.setCharacterSize(40);
-	m_pos0.setPosition(this->m_view->getCenter().x *9.3/10,HEIGHT * 7/12);
+	m_pos0.setCharacterSize(60);
+	m_pos0.setPosition(this->m_view->getCenter().x - WIDTH * 1/10,HEIGHT * 7/12);
     m_pos0.setFillColor(sf::Color::Red);
 
 	m_pos1.setFont(getFontC());
-	m_pos1.setCharacterSize(40);
-	m_pos1.setPosition(this->m_view->getCenter().x*9.7/10,HEIGHT * 7/12);
+	m_pos1.setCharacterSize(60);
+	m_pos1.setPosition(this->m_view->getCenter().x - WIDTH * 1/26,HEIGHT * 7/12);
     m_pos1.setFillColor(sf::Color::Red);
 	
 	m_pos2.setFont(getFontC());
-	m_pos2.setCharacterSize(40);
-	m_pos2.setPosition(this->m_view->getCenter().x*1.01,HEIGHT * 7/12);
+	m_pos2.setCharacterSize(60);
+	m_pos2.setPosition(this->m_view->getCenter().x + WIDTH * 1/26,HEIGHT * 7/12);
     m_pos2.setFillColor(sf::Color::Red);
 	
 	m_pos3.setFont(getFontC());
-	m_pos3.setCharacterSize(40);
-	m_pos3.setPosition(this->m_view->getCenter().x *1.05,HEIGHT * 7/12);
+	m_pos3.setCharacterSize(60);
+	m_pos3.setPosition(this->m_view->getCenter().x + WIDTH * 1/10,HEIGHT * 7/12);
     m_pos3.setFillColor(sf::Color::Red);	
 
 	m_space.setFont(getFontC());
@@ -168,6 +166,7 @@ void GameOverScene::saveScore(int l_p, std::string l_n){
 }
 
 void GameOverScene::update(const sf::Time &l_time, Game &g){
+	*this->m_view = g.getView();
     Sleep(50);
 	
 	if(sf::Keyboard::isKeyPressed(sf::Keyboard::A)){
@@ -363,7 +362,9 @@ void GameOverScene::update(const sf::Time &l_time, Game &g){
         saveScore(m_newScore, s.str());
         
 		//g.switchScene(new ScoreScene());
-		g.switchScene(new ScoreScene(m_view->getCenter()));
+		//g.switchScene(new ScoreScene(m_view->getCenter()));
+		std::cout<<"center update gameOverscene "<<m_view->getCenter().x<<" "<<m_view->getCenter().y<<std::endl;
+		g.switchScene(new ScoreScene(g.getView().getCenter()));
 	}
 }
 

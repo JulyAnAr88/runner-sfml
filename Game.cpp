@@ -18,6 +18,7 @@ Game &Game::create(const sf::VideoMode &videoMode, BaseScene *scene, const std::
 		g.m_window.create(videoMode, name, sf::Style::Close);
 		g.m_next_scene = nullptr;
 		g.loadTextures();
+		g.m_view = new sf::View(sf::FloatRect(0, 0.f, WIDTH, HEIGHT));
 		g.m_current_scene = scene;
 		g.m_window.setFramerateLimit(60);
 		g.m_clock.restart();
@@ -58,7 +59,7 @@ void Game::run ( ) {
 
 void Game::update ( ) {
 	m_current_scene->update(m_clock.getElapsedTime(),*this);
-	//m_current_scene->update(m_clock.getElapsedTime().asSeconds()*1500);
+	m_view->setCenter(m_current_scene->getView().getCenter());
 	m_clock.restart();
 }
 
@@ -140,6 +141,11 @@ void Game::loadPaths(const std::string &l_pathFile){
 		return;
 	}
 	std::cerr << "! Failed loading the path file: " << l_pathFile << std::endl;
+}
+
+sf::View &Game::getView(){
+
+    return *m_view;
 }
 
 void Game::loadTextures(){

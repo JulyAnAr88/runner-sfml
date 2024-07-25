@@ -27,6 +27,7 @@ void GameScene::onDestroy(){
 }
 
 void GameScene::update(const sf::Time& l_time, Game &g){
+	*this->m_view = g.getView();
 	sf::Time time = m_clock.getElapsedTime();
 	m_terreno->update(l_time.asSeconds()*250,g);
 	
@@ -41,10 +42,15 @@ void GameScene::update(const sf::Time& l_time, Game &g){
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F1)){
 		//IntroScene *is = new IntroScene(m_view->getCenter());
 		//is->onCreate(*m_tm);
+		std::cout<<"center gamescene "<<m_view->getCenter().x<<" "<<m_view->getCenter().y<<std::endl; 
 		g.switchScene(new IntroScene(m_view->getCenter()));
 	}
 	if(m_terreno->playerIsDead() || m_terreno->exito()){
-		g.switchScene(new GameOverScene(m_terreno->getPoints(),m_terreno->getTime(),m_terreno->exito(),m_view->getCenter()));
+		std::cout<<"center gamescene "<<m_view->getCenter().x<<" "<<m_view->getCenter().y<<std::endl; 
+		std::cout<<"center gamescene "<<g.getView().getCenter().x<<" "<<g.getView().getCenter().y<<std::endl; 
+		g.switchScene(new GameOverScene(m_terreno->getPoints(),m_terreno->getTime(),m_terreno->exito(), 
+		//g.getView().getCenter()));
+		g.getView().getCenter()));
 		
 	}
 	
