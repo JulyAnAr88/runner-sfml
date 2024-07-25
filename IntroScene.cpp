@@ -4,8 +4,8 @@
 #include "ScoreScene.h"
 
 IntroScene::IntroScene(sf::Vector2f l_centerView)
-	: BaseScene(){
-		//m_view->setCenter(l_centerView);
+	: BaseScene(), m_centerView(l_centerView){
+		//this->m_view = new sf::View(sf::FloatRect(0.f, 0.f, WIDTH, HEIGHT));
 	}
 
 IntroScene::IntroScene()
@@ -15,6 +15,7 @@ IntroScene::~IntroScene(){}
 
 void IntroScene::onCreate(TextureMap &l_textureMap){
 	this->m_view = new sf::View(sf::FloatRect(0.f, 0.f, WIDTH, HEIGHT));
+		m_view->setCenter(m_centerView);
     auto itr = l_textureMap.vm->find("Intro");
     if(itr != l_textureMap.vm->end()){
 	    m_introSprite.setTexture(*itr->second);
@@ -22,8 +23,8 @@ void IntroScene::onCreate(TextureMap &l_textureMap){
 	m_introSprite.setScale(0.65,0.65);
 	m_introSprite.setOrigin(itr->second->getSize().x / 2.0f,
 							itr->second->getSize().y / 2.0f);
-
-	m_introSprite.setPosition(WIDTH / 2.0f, HEIGHT / 2.0f);
+	
+	m_introSprite.setPosition(this->m_view->getCenter());
 
 	//m_fontTitle.loadFromFile("fonts/BowlbyOneSC-Regular.otf");
 	m_textTitle.setFont(getFontB());
@@ -35,7 +36,7 @@ void IntroScene::onCreate(TextureMap &l_textureMap){
 		textRectTitle.top + textRectTitle.height / 2.0f);
 	/* m_textTitle.setPosition(m_introSprite.getPosition().x, 
 		m_introSprite.getPosition().y + textureMgr->getResource("Intro")->getSize().y ); */
-	m_textTitle.setPosition(WIDTH / 2.0f, HEIGHT / 4.0f);
+	m_textTitle.setPosition(this->m_view->getCenter().x, HEIGHT / 4.0f);
 	//m_font.loadFromFile("fonts/CompleteinHim.ttf");
 	m_text.setFont(getFontC());
 	m_text.setString(sf::String("Presiona ESPACIO para continuar"));
@@ -46,7 +47,7 @@ void IntroScene::onCreate(TextureMap &l_textureMap){
 		textRect.top + textRect.height / 2.0f);
 	/* m_text.setPosition(m_introSprite.getPosition().x, 
 		m_introSprite.getPosition().y + textureMgr->getResource("Intro")->getSize().y / 1.5f); */
-    m_text.setPosition(WIDTH / 2.0f, HEIGHT / 1.5f);	
+    m_text.setPosition(this->m_view->getCenter().x, HEIGHT / 1.5f);	
 }
 
 void IntroScene::onDestroy(){
@@ -57,6 +58,7 @@ void IntroScene::draw(sf::RenderWindow &window){
 	window.draw(m_introSprite);
 	window.draw(m_textTitle);
 	window.draw(m_text);
+	window.setView(*m_view);
 }
 
 void IntroScene::processEvent(const sf::Event &e){

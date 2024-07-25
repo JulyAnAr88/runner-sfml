@@ -3,7 +3,7 @@
 ScoreScene::ScoreScene(sf::Vector2f l_centerView) : 
     BaseScene() {
 	this->m_view = new sf::View(sf::FloatRect(0.f, 0.f, WIDTH, HEIGHT));
-    //this->m_view->setCenter(l_centerView);
+    this->m_view->setCenter(l_centerView);
 }
 
 ScoreScene::ScoreScene() : 
@@ -20,8 +20,8 @@ void ScoreScene::onCreate(TextureMap &l_textureMap){
 	m_introSprite.setScale(0.65,0.65);
 	m_introSprite.setOrigin(itr->second->getSize().x / 2.0f,
 							itr->second->getSize().y / 2.0f);
-
-	m_introSprite.setPosition(WIDTH / 2.0f, HEIGHT / 2.0f);
+    
+	m_introSprite.setPosition(this->m_view->getCenter());
     
    m_font.loadFromFile("fonts/CompleteinHim.ttf");
     m_fontPuntaje.loadFromFile("fonts/BowlbyOneSC-Regular.otf");
@@ -35,25 +35,25 @@ void ScoreScene::onCreate(TextureMap &l_textureMap){
 	m_puntaje.setOrigin(textRectTitle.left + textRectTitle.width / 2.0f,
 		textRectTitle.top + textRectTitle.height / 2.0f);
 	  
-	//m_puntaje.setPosition(WIDTH / 2.0f, HEIGHT / 6.5f);
 	m_puntaje.setPosition(this->m_view->getCenter().x,HEIGHT * 1.5/12);
     m_textos.push_back(m_puntaje);
 
-
+    float posXName = this->m_view->getCenter().x- WIDTH * 1/7;
+    float posXScore = this->m_view->getCenter().x* 1.005;
 	std::stringstream s0;
         s0<<m_vTabla[0].nombre[0]<<m_vTabla[0].nombre[1]
             <<m_vTabla[0].nombre[2]<<m_vTabla[0].nombre[3];
 	m_namePos0.setFont(getFontC());
 	m_namePos0.setCharacterSize(45);
     m_namePos0.setFillColor(sf::Color::Red);
-	m_namePos0.setPosition(this->m_view->getCenter().x * 7/8,HEIGHT * 3/12);
+	m_namePos0.setPosition(posXName,HEIGHT * 3/12);
 	m_namePos0.setString(s0.str());
     m_textos.push_back(m_namePos0);
 
 	m_pos0.setFont(getFontC());
 	m_pos0.setCharacterSize(45);
     m_pos0.setFillColor(sf::Color::Red);
-	m_pos0.setPosition(this->m_view->getCenter().x * 1.08,HEIGHT * 3/12);
+	m_pos0.setPosition(posXScore,HEIGHT * 3/12);
 	m_pos0.setString(std::to_string(m_vTabla[0].puntos));
     m_textos.push_back(m_pos0);
  
@@ -63,14 +63,14 @@ void ScoreScene::onCreate(TextureMap &l_textureMap){
 	m_namePos1.setFont(m_font);
 	m_namePos1.setCharacterSize(45);
     m_namePos1.setFillColor(sf::Color::Red);
-	m_namePos1.setPosition(this->m_view->getCenter().x * 7/8,HEIGHT * 4/12);
+	m_namePos1.setPosition(posXName,HEIGHT * 4/12);
 	m_namePos1.setString(s1.str());
     m_textos.push_back(m_namePos1);
 
 	m_pos1.setFont(m_font);
 	m_pos1.setCharacterSize(45);
     m_pos1.setFillColor(sf::Color::Red);
-	m_pos1.setPosition(this->m_view->getCenter().x * 1.08,HEIGHT * 4/12);
+	m_pos1.setPosition(posXScore,HEIGHT * 4/12);
 	m_pos1.setString(std::to_string(m_vTabla[1].puntos));
     m_textos.push_back(m_pos1);
 
@@ -80,14 +80,14 @@ void ScoreScene::onCreate(TextureMap &l_textureMap){
     m_namePos2.setFont(m_font);
 	m_namePos2.setCharacterSize(45);
     m_namePos2.setFillColor(sf::Color::Red);
-	m_namePos2.setPosition(this->m_view->getCenter().x * 7/8,HEIGHT * 5/12);
+	m_namePos2.setPosition(posXName,HEIGHT * 5/12);
 	m_namePos2.setString(s2.str());
     m_textos.push_back(m_namePos2);
 
 	m_pos2.setFont(m_font);
 	m_pos2.setCharacterSize(45);
     m_pos2.setFillColor(sf::Color::Red);
-	m_pos2.setPosition(this->m_view->getCenter().x * 1.08,HEIGHT * 5/12);
+	m_pos2.setPosition(posXScore,HEIGHT * 5/12);
 	m_pos2.setString(std::to_string(m_vTabla[2].puntos));
     m_textos.push_back(m_pos2);
 
@@ -97,14 +97,14 @@ void ScoreScene::onCreate(TextureMap &l_textureMap){
 	m_namePos3.setFont(m_font);
 	m_namePos3.setCharacterSize(45);
     m_namePos3.setFillColor(sf::Color::Red);
-	m_namePos3.setPosition(this->m_view->getCenter().x * 7/8,HEIGHT * 6/12);
+	m_namePos3.setPosition(posXName,HEIGHT * 6/12);
 	m_namePos3.setString(s3.str());
     m_textos.push_back(m_namePos3);
 
 	m_pos3.setFont(m_font);
 	m_pos3.setCharacterSize(45);
     m_pos3.setFillColor(sf::Color::Red);
-	m_pos3.setPosition(this->m_view->getCenter().x * 1.08,HEIGHT * 6/12);
+	m_pos3.setPosition(posXScore,HEIGHT * 6/12);
 	m_pos3.setString(std::to_string(m_vTabla[3].puntos));
     m_textos.push_back(m_pos3);
 
@@ -114,14 +114,14 @@ void ScoreScene::onCreate(TextureMap &l_textureMap){
 	m_namePos4.setFont(m_font);
 	m_namePos4.setCharacterSize(45);
     m_namePos4.setFillColor(sf::Color::Red);
-	m_namePos4.setPosition(this->m_view->getCenter().x * 7/8,HEIGHT * 7/12);
+	m_namePos4.setPosition(posXName,HEIGHT * 7/12);
 	m_namePos4.setString(s4.str());
     m_textos.push_back(m_namePos4);
 
 	m_pos4.setFont(m_font);
 	m_pos4.setCharacterSize(45);
     m_pos4.setFillColor(sf::Color::Red);
-	m_pos4.setPosition(this->m_view->getCenter().x * 1.08,HEIGHT * 7/12);
+	m_pos4.setPosition(posXScore,HEIGHT * 7/12);
 	m_pos4.setString(std::to_string(m_vTabla[4].puntos));
     m_textos.push_back(m_pos4);
 
@@ -164,9 +164,8 @@ void ScoreScene::readTabla(){
 
 void ScoreScene::update(const sf::Time &l_time, Game &g){
     *this->m_view = g.getView();
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){
-        
-		g.switchScene(new IntroScene(m_view->getCenter()));
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)){        
+		g.switchScene(new IntroScene(g.getView().getCenter()));
 	}
 }
 

@@ -51,12 +51,10 @@ public:
 	void applyFriction(float l_x, float l_y);
 	
 	sf::FloatRect getGlobalBounds();
-	bool collideWith(const Entity & ent2);
 			
 	sf::FloatRect checkCollision(Entity &b);
 	void updateHitbox();
-
-	void onEntityCollision(Entity* l_collider, bool l_attack);
+	
 	virtual void draw(sf::RenderWindow* l_wind) = 0;   
 	virtual void update(float l_dT);
 

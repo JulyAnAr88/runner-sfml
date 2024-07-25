@@ -32,6 +32,10 @@ public:
 	void loadEnemyTypes(const std::string& l_path);
 	void loadNext();
 
+	void generarEnemies(double elapsed);
+	void generarTiles(double elapsed);
+	void collisionCheck(double elapsed);
+
 	Entity *findEntity(unsigned int l_id);
 	Entity *findEntity(const std::string& l_name);
 
@@ -94,6 +98,8 @@ private:
 
 	int m_greenFlag = 0;
 	int m_redFlag = 0;
+	sf::Text m_textHalf;
+	sf::Font m_font;
 	
 	double m_timePassedMosquito = 0.0;
     double m_timePassedSnake = 0.0;

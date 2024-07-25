@@ -41,7 +41,7 @@ HUD::HUD(TextureMap &l_tm) {
 	
 	m_healthText.setFont(m_scoreFont);
 	m_healthText.setString(sf::String("x"));
-	m_healthText.setCharacterSize(45);
+	m_healthText.setCharacterSize(30);
 	m_healthText.setFillColor(sf::Color::White);
 	sf::FloatRect healthRect = m_healthText.getLocalBounds();
 	m_healthText.setOrigin(healthRect.left + healthRect.width / 2.0f,
@@ -63,7 +63,7 @@ HUD::HUD(TextureMap &l_tm) {
 void HUD::update(double elapsed, int hp){
 	m_puntos += elapsed;
 	m_scoreToPrint = getTime();
-	m_healthPrint.setString(std::to_string(floor(hp/4)));
+	m_healthPrint.setString(std::to_string(hp/4));
 
 }
 

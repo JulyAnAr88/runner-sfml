@@ -45,149 +45,17 @@ int Land::add(const EntityType &l_type, const std::string &l_name){
 }
 
 void Land::update(double elapsed,Game &g) {
-	sf::FloatRect nulo = {0,0,0,0};
+	
+	generarEnemies(elapsed);
 
-	for(const auto& e: m_entities){
-		e.second->update(elapsed);
-		if (e.second->getName()=="Tile_Static"){
-			sf::FloatRect overlap = m_player->checkCollision(*e.second);
-			Tile* te = (Tile*) e.second;
-			if(te->getAnimId() >0 && te->getAnimId()<19){
-				if(overlap != nulo){
-					m_player->separate(overlap,*e.second);
-				}
-			}
-		}
-		if (e.second->getName()=="Tile_Animated"){
-			sf::FloatRect overlap = m_player->checkCollision(*e.second);
-			Tile* te = (Tile*) e.second;		
-			if(te->getAnimId() == 27){
-				if(overlap != nulo){
-					m_player->die();
-				}
-			}
-		}
-		if (e.second->getName()=="Tile_Static"){
-			sf::FloatRect overlap = m_player->checkCollision(*e.second);
-			Tile* te = (Tile*) e.second;		
-			if(te->getAnimId() == 24){
-				if(overlap != nulo){
-					std::cout<<" bachi "<<std::endl;
-					Sleep(500);
-					m_exito = true;
-				}
-			}
-		}
+	generarTiles(elapsed);
 
-		if (e.second->getName()=="Tile_Static"){
-			sf::FloatRect overlap = m_player->checkCollision(*e.second);
-			Tile* te = (Tile*) e.second;		
-			if(te->getAnimId() == 26){
-				if(overlap != nulo){
-					m_redFlag = add(EntityType::Tile,"Tile_Animated");
-					findEntity(m_redFlag)->setPosition(te->getPosition());
-					remove(e.first); 
-				}
-			}
-		}
-		if (e.second->getName()=="Tile_Static"){
-			sf::FloatRect overlap = m_player->checkCollision(*e.second);
-			Tile* te = (Tile*) e.second;		
-			if(te->getAnimId() == 25){
-				if(overlap != nulo){
-					m_greenFlag = add(EntityType::Tile,"Tile_Animated");
-					findEntity(m_greenFlag);
-					remove(e.first);
-				}
-			}
-		}
-		if (e.second->getType() == EntityType::Enemy){
-			sf::FloatRect overlap = m_player->checkCollision(*e.second);
-			if(overlap != nulo){
-				Enemy* en = (Enemy*) e.second;
-				//std::cout<<" enemy "<<en->getName()<<std::endl;
-				m_player->separate(overlap,*en);
-				m_player->takeDamage(en->hurt());
-				if(m_player->getHitpoints()== 0){
-					m_player->die();
-				}
-			}
-		}
-
-
-	}
-
-
-
-	m_timePassedMosquito += elapsed;
-	m_timePassedSnake += elapsed;
-	m_timePassedObject += elapsed;
-	m_timePassedObstacle += elapsed;
-
-	if(m_timePassedMosquito > SPAWNING_TIME_MOSQUITO){		
-		int enemyId = add(EntityType::Enemy,"Mosquito");
-		findEntity(enemyId)->setPosition(m_view->getCenter().x*2, m_view->getCenter().y);
-		m_timePassedMosquito = 0;
-		m_cantEnemies +=1;
-	}
-	if(m_timePassedSnake > SPAWNING_TIME_SERPIENTE){		
-		int enemyId = add(EntityType::Enemy,"Snake");
-		findEntity(enemyId)->setPosition(m_view->getCenter().x*2, m_view->getSize().y*11.2/12);
-		m_timePassedSnake = 0;
-		m_cantEnemies +=1;
-	}
-
-	if(m_timePassedObject > SPAWNING_TIME_ARBUSTO){		
-		int objectId = add(EntityType::Tile,"Tile_Static");
-		Tile * tile = (Tile *) findEntity(objectId);
-		//21 22		
-		int random = rand() % 2;
-		sf::Vector2f coords(m_view->getSize().x*2,100);
-		if(random == 0){
-			tile->setAnimId(22);
-			tile->setPosition(coords);
-		}else{
-			tile->setAnimId(21);
-			tile->setPosition(coords);
-		}
-		tile->setPosition(m_view->getCenter().x*2, m_view->getSize().y*9.8/12);
-		m_tiles.push_back(tile);
-		m_timePassedObject = 0;
-	}
-
-	if(m_timePassedObstacle > SPAWNING_TIME_ROCA){		
-		int objectId = add(EntityType::Tile,"Tile_Static");
-		Tile * tile = (Tile *) findEntity(objectId);
-		//17 18		
-		int random = rand() % 2;
-		sf::Vector2f coords(m_view->getSize().x*2,100);
-		if(random == 0){
-			tile->setAnimId(18);
-			tile->setPosition(coords);
-		}else{
-			tile->setAnimId(17);
-			tile->setPosition(coords);
-		}
-		tile->setPosition(m_view->getCenter().x*2, m_view->getSize().y*9.5/12);
-		m_tiles.push_back(tile);
-		m_timePassedObstacle = 0;
-	}
-
+	collisionCheck(elapsed);
 
 	m_background.setPosition(m_view->getCenter().x-WIDTH/2,0);
 	m_hud->setPosition(m_view->getCenter().x+WIDTH*0.33,HEIGHT*0.08);
 	m_hud->update(elapsed, m_player->getHitpoints());
-
-	for(const auto& e: m_entities){
-		bool lejos = e.second->getPosition().x+WIDTH < m_player->getPosition().x;
-		if(lejos){
-			if(e.second->getName()!="Tile_Animated"){
-				//std::cout<<"to remove "<<e.second->getName()<<std::endl; 
-				remove(e.first);
-			}
-			//remove(e.first);
-		}
-	}
+	
 	processRemovals();
 
 }
@@ -199,35 +67,37 @@ void Land::draw(sf::RenderWindow &w){
 	for(const auto& e: m_entities){
 		if (e.second->getType() != EntityType::Player || 
 			e.second->getType() != EntityType::Enemy){
-			int i = 0;
 			for(auto t : m_tilesMap){
 				if(e.first == t.first){
 					Tile* tile = (Tile*)e.second;
 					tile->setAnimId(t.second.first);
-					tile->setPosition(t.second.second.x*94,w.getSize().y/7.5*t.second.second.y);
+					tile->setPosition(t.second.second.x * m_maxMapSize.x, w.getSize().y/7.5*t.second.second.y);
 					tile->draw(&w);
 				}
-					i+=1;
 			}
 		}
 	}
 
 	for(const auto& t:m_tiles){
-		//t->setPosition(m_view->getCenter().x*2,m_view->getSize().y*9.2/12);
 		t->draw(&w);
 	}
 
 	if(m_greenFlag !=0){
 		Tile* te = (Tile*)findEntity(m_greenFlag);
 		te->setAnimId(28); 
+		te->setPosition(6392,385);
 		te->draw(&w);
 	}
 
 	if(m_redFlag !=0){		
 		Tile* te = (Tile*)findEntity(m_redFlag);
 		te->setAnimId(29); 
+		te->setPosition(3572,385);
+		m_textHalf.setPosition(3575,175);
 		te->draw(&w);
+		w.draw(m_textHalf);
 	}
+	
 	for(const auto& e: m_entities){
 		if (e.second->getType() == EntityType::Player || 
 			e.second->getType() == EntityType::Enemy){			
@@ -249,11 +119,13 @@ sf::FloatRect Land::getViewSpace(sf::RenderWindow &l_window){
 }
 
 int Land::getPoints(){
+	if(m_exito){
+		return m_cantEnemies+1000;
+	}
     return m_cantEnemies;
 }
 
-std::string Land::getTime()
-{
+std::string Land::getTime(){
     return m_hud->getTime();
 }
 
@@ -378,6 +250,158 @@ void Land::loadEnemyTypes(const std::string &l_path){
 
 void Land::loadNext() { m_loadNextMap = true; }
 
+void Land::generarEnemies(double elapsed){
+
+	m_timePassedMosquito += elapsed;
+	m_timePassedSnake += elapsed;
+
+	if(m_timePassedMosquito > SPAWNING_TIME_MOSQUITO){		
+		int enemyId = add(EntityType::Enemy,"Mosquito");
+		findEntity(enemyId)->setPosition(m_view->getCenter().x*2, m_view->getCenter().y);
+		m_timePassedMosquito = 0;
+		m_cantEnemies +=1;
+	}
+	if(m_timePassedSnake > SPAWNING_TIME_SERPIENTE){		
+		int enemyId = add(EntityType::Enemy,"Snake");
+		findEntity(enemyId)->setPosition(m_view->getCenter().x*2, m_view->getSize().y*11.15/12);
+		//findEntity(enemyId)->setPosition(m_view->getCenter().x*2, m_view->getSize().y*9.15/12);
+		m_timePassedSnake = 0;
+		m_cantEnemies +=1;
+	}
+}
+
+//Generación de entidades aleatorias
+void Land::generarTiles(double elapsed){
+	
+	m_timePassedObject += elapsed;
+	m_timePassedObstacle += elapsed;
+
+	
+	if(m_timePassedObject > SPAWNING_TIME_ARBUSTO){		
+		int objectId = add(EntityType::Tile,"Tile_Static");
+		Tile * tile = (Tile *) findEntity(objectId);
+		//21 22		
+		int random = rand() % 2;
+		sf::Vector2f coords(m_view->getSize().x*2,100);
+		if(random == 0){
+			tile->setAnimId(22);
+			tile->setPosition(coords);
+		}else{
+			tile->setAnimId(21);
+			tile->setPosition(coords);
+		}
+		tile->setPosition(m_view->getCenter().x*2, m_view->getSize().y*9.5/12);
+		m_tiles.push_back(tile);
+		m_timePassedObject = 0;
+	}
+
+	if(m_timePassedObstacle > SPAWNING_TIME_ROCA){		
+		int objectId = add(EntityType::Tile,"Tile_Static");
+		Tile * tile = (Tile *) findEntity(objectId);
+		//17 18		
+		int random = rand() % 2;
+		sf::Vector2f coords(m_view->getSize().x*2,100);
+		if(random == 0){
+			tile->setAnimId(18);
+			tile->setPosition(coords);
+		}else{
+			tile->setAnimId(17);
+			tile->setPosition(coords);
+		}
+		tile->setPosition(m_view->getCenter().x*2, m_view->getSize().y*9.6/12);
+		m_tiles.push_back(tile);
+		m_timePassedObstacle = 0;
+	}
+}
+
+//Interacciones con el ambiente
+void Land::collisionCheck(double elapsed){
+	sf::FloatRect nulo = {0,0,0,0};
+
+	for(const auto& e: m_entities){
+		e.second->update(elapsed);
+		if (e.second->getName()=="Tile_Animated"){
+			sf::FloatRect overlap = m_player->checkCollision(*e.second);
+			Tile* te = (Tile*) e.second;		
+			if(te->getAnimId() == 27){
+				if(overlap != nulo){
+					m_player->die();
+				}
+			}
+		 }
+
+		
+		if (e.second->getName()=="Tile_Static"){
+			sf::FloatRect overlap = m_player->checkCollision(*e.second);
+			Tile* te = (Tile*) e.second;
+			if(te->getAnimId() >0 && te->getAnimId()<19){
+				if(overlap != nulo){
+					m_player->separate(overlap,*e.second);
+				}
+			}
+
+			if(te->getAnimId() == 24){
+				if(overlap != nulo){
+					Sleep(500);					
+					m_exito = true;
+				}
+			}
+
+			if(te->getAnimId() == 0){
+				if(overlap != nulo){
+					m_font.loadFromFile("fonts/CompleteinHim.ttf");
+					m_textHalf.setFont(m_font);
+					//m_textHalf.setFont(m_currentScene->getFontC());
+					m_textHalf.setString(sf::String("Excelente, sigue asi!"));
+					m_textHalf.setCharacterSize(55);
+					m_textHalf.setFillColor(sf::Color::Red);
+					sf::FloatRect textRectTitle = m_textHalf.getLocalBounds();
+					m_textHalf.setOrigin(textRectTitle.left + textRectTitle.width / 2.0f,
+						textRectTitle.top + textRectTitle.height / 2.0f);					
+					m_textHalf.setPosition(3575,175);
+				}
+			}
+			
+			if(te->getAnimId() == 26){
+				if(overlap != nulo){
+					m_redFlag = add(EntityType::Tile,"Tile_Animated");
+					remove(e.first); 
+				}
+			}
+
+			if(te->getAnimId() == 25){
+				if(overlap != nulo){
+					remove(e.first);
+					m_greenFlag = add(EntityType::Tile,"Tile_Animated");
+				}
+			}
+		}
+		
+		if (e.second->getType() == EntityType::Enemy){
+			/*	sf::FloatRect overlap = m_player->checkCollision(*e.second);
+			if(e.second->getName()=="Snake" && overlap != nulo){
+				std::cout<<"enemy Mx "<<e.second->getSize().x<<std::endl;
+				std::cout<<"enemy My "<<e.second->getSize().y<<std::endl;
+		 	std::cout<<"enemy Mwidth "<<en->getGlobalBounds().width<<std::endl;
+				std::cout<<"enemy Mheight "<<en->getGlobalBounds().height<<std::endl;
+				std::cout<<"enemy Mleft "<<en->getGlobalBounds().left<<std::endl;
+				std::cout<<"enemy Mtop "<<en->getGlobalBounds().top<<std::endl;
+			}
+			*/
+			sf::FloatRect overlap = m_player->checkCollision(*e.second);
+				Enemy* en = (Enemy*) e.second;
+			if(overlap != nulo){
+				m_player->separate(overlap,*en);
+				m_player->takeDamage(en->hurt());
+				if(m_player->getHitpoints()== 0){
+					m_player->die();
+				}
+			}
+		}
+	}
+
+}
+
 void Land::setView(sf::View &l_view){
 	m_view = &l_view;
 }
@@ -391,11 +415,8 @@ bool Land::exito(){
 }
 
 void Land::remove(int l_id){
-/* 	std::cout<<"to delete "<<l_id<<std::endl; 
-	std::cout<<"to delete redf "<<m_redFlag<<std::endl;  */
     to_delete.push_back(l_id);
 }
-
 
 Land::~Land(){
 	purgeMap();
@@ -409,17 +430,41 @@ void Land::purgeMap(){
 }
 
 void Land::processRemovals(){
+
+	for(const auto& e: m_entities){
+		bool lejos = e.second->getPosition().x+WIDTH < m_player->getPosition().x;
+		if(lejos){
+			if(e.second->getType()!=EntityType::Tile){
+				remove(e.first);
+			}
+		}
+	}
+
+	for(const auto e: m_tiles){
+		bool lejos = e->getPosition().x+WIDTH < m_player->getPosition().x;
+		if(lejos){
+			if(e->getType()!=EntityType::Tile){
+				delete e;
+				m_tiles.pop_back();
+			}
+		}
+	}
+
 	while(to_delete.begin() != to_delete.end()){
 		unsigned int id = to_delete.back();
 		auto itr = m_entities.find(id);
-		if(itr != m_entities.end()){
-		//std::cout<<"process removal pre if "<<itr->second->getName()<<std::endl; 
-		if(itr->second->getName()=="Tile_Animated"){
-		//std::cout<<"process removal in if "<<itr->second->getName()<<std::endl; 
+		if(itr != m_entities.end()){	
+			if(itr->second->getType()==EntityType::Tile){
+				if(itr->second->getName()=="Tile_Static"){
+					std::cout << "Discarding entity: " << itr->second->getId() << std::endl;
+					delete itr->second;
+					m_entities.erase(itr);
+				}
+			} else {
 				std::cout << "Discarding entity: " << itr->second->getId() << std::endl;
 				delete itr->second;
 				m_entities.erase(itr);
-		}
+			}
 		}
 		to_delete.pop_back();
 	}

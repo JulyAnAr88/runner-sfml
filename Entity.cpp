@@ -138,7 +138,6 @@ void Entity::update(float l_dT){
 	float friction_y = (m_speed.y * frictionValue.y) * l_dT;
 	applyFriction(friction_x, friction_y);
 	sf::Vector2f deltaPos = m_velocity * (l_dT/10);
-	//std::cout<<"enemy "<<deltaPos.x<<std::endl;
 	move(deltaPos.x, deltaPos.y);
 	
 }

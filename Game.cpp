@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "GameScene.h"
 #include "BaseScene.h"
-//#include "hsStruct.h"
 #include <fstream>
 #include <iostream>
 
@@ -90,37 +89,6 @@ void Game::processEvents ( ) {
 void Game::switchScene(BaseScene *scene){
 	m_next_scene = scene;
 	scene->onCreate(m_tM);
-	//scene->setView(m_view);
-	//scene->setv
-}
-
-void Game::InitHighScore ( ) {
-	/*std::ifstream file("bin/HighScores.bin",std::ios::binary|std::ios::in|std::ios::ate);
-	if(!file){
-		std::cerr << "/n The file could not be opened n/" ;
-		std::ofstream newFile("bin/HighScores.bin", std::ios::trunc | std::ios::binary);
-		newFile.close();
-		for (int i = 0; i < 10; i++)
-		{
-			char caux[20] = "___";
-			hsStruct aux(caux,0);
-			Scores.push_back(aux);
-		}
-		this->saveScores();
-	}
-	int can = file.tellg()/sizeof(hsStruct);
-	file.seekg(0);
-	
-	hsStruct p;
-	for(int i=0; i<can;++i){
-		file.read(reinterpret_cast<char*>(&p),sizeof(hsStruct));
-		Scores.push_back(p);
-		if(Scores.size()>10){
-			std::cerr << "/n error initializing vector n/";
-		}
-	}
-	
-	file.close();*/
 }
 
 
@@ -167,30 +135,6 @@ sf::Texture *Game::load(const std::string &l_path){
 	}
 	return texture;
 }
-/*AddScore (hsStruct score) {
-	
-	if(Scores[0]._points<score._points){
-		Scores[0] = score;
-		sort(Scores.begin(),Scores.end());
-	}
-	saveScores();
-}
-
-std::vector<hsStruct> Game::getHighscore(){
-	/*this->saveScores();
-	return this->Scores;
-}
-
-void Game::saveScores(){
-	std::ofstream file("bin/HighScores.bin",std::ios::ate|std::ios::binary|std::ios::out|std::ios::trunc);
-	
-	for(size_t i=0; i<Scores.size();++i){
-		hsStruct aux = Scores[i];
-		file.write(reinterpret_cast<char*>(&aux),sizeof(hsStruct));
-	}
-	
-	file.close();
-}*/
 
 Game::~Game ( ) {
 	

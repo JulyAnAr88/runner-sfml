@@ -1,6 +1,7 @@
 #ifndef INTROSCENE_H
 #define INTROSCENE_H
 #include "BaseScene.h"
+#include "SharedContext.h"
 class Game;
 
 class IntroScene : public BaseScene{
@@ -25,5 +26,6 @@ private:
 	sf::Font m_font, m_fontTitle;
 	sf::Text m_textTitle, m_text;
 
+	sf::Vector2f m_centerView = {WIDTH / 2.0f, HEIGHT / 2.0f};
 };
 #endif

@@ -35,14 +35,7 @@ public:
 	void loadPaths(const std::string &l_pathFile);
 
 	sf::View &getView();
-	
-	// Para el sistema de puntajes
-	void InitHighScore();//passes the data from the Tanto file to a vector of scores
-	/*void AddScore(hsStruct score);//if the score is higher than the last score saved, it add the score to the scores vector
-	std::vector<hsStruct> getHighscore();
-	void saveScores();
-	sf::RenderWindow& getWindow();*/
-	
+		
 private:
 	Game();
 	
@@ -65,10 +58,7 @@ private:
 	TileMap *m_tileMs;
 	
 	~Game();
-	
-	//std::vector<hsStruct> Scores; 
-	//hsStruct aux;
-	
+
 };
 
 

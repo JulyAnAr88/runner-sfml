@@ -26,9 +26,8 @@ GameOverScene::GameOverScene(int l_score, std::string l_time, bool exito, sf::Ve
 			m_music.setLoop(true);
 			m_music.play();
 		}
-   this->m_view = new sf::View(sf::FloatRect(0.f, 0.f, WIDTH, HEIGHT));
-   this->m_view->setCenter(l_centerView);
-		std::cout<<"center gameOverscene "<<m_view->getCenter().x<<" "<<m_view->getCenter().y<<std::endl;
+   	this->m_view = new sf::View(sf::FloatRect(0.f, 0.f, WIDTH, HEIGHT));
+   	this->m_view->setCenter(l_centerView);
     }
 
 GameOverScene::~GameOverScene(){ 
@@ -140,7 +139,6 @@ void GameOverScene::saveScore(int l_p, std::string l_n){
             Tabla import;
             fileIn.read(reinterpret_cast<char*>(&import),sizeof(Tabla));
             m_vTabla.push_back(import);
-            //std::cout<<"m_vtaba gos save read "<<import.puntos<<" "<<import.nombre[0]<<std::endl;
         }
     }
 	fileIn.close();
@@ -361,9 +359,6 @@ void GameOverScene::update(const sf::Time &l_time, Game &g){
         s<<pos0<<pos1<<pos2<<pos3;
         saveScore(m_newScore, s.str());
         
-		//g.switchScene(new ScoreScene());
-		//g.switchScene(new ScoreScene(m_view->getCenter()));
-		std::cout<<"center update gameOverscene "<<m_view->getCenter().x<<" "<<m_view->getCenter().y<<std::endl;
 		g.switchScene(new ScoreScene(g.getView().getCenter()));
 	}
 }

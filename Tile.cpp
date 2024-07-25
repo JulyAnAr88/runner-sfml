@@ -2,7 +2,7 @@
 
 Tile::Tile() 
     :Entity()
-{m_name = "Tile";}
+{/* m_name = "Tile"; */ m_type = EntityType::Tile; }
 
 Tile::~Tile(){}
 
