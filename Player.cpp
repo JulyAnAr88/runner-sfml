@@ -15,6 +15,8 @@ Player::~Player(){ }
 void Player::update(float l_dT){
 	Character::update(l_dT);
 
+
+
 	bool up = m_position.y - m_positionOld.y > 2.0;
 	bool goToLeft = m_dir == Direction::Left;
 	if(getState() != EntityState::Dying && getState() != EntityState::Hurt){
@@ -22,8 +24,9 @@ void Player::update(float l_dT){
 		if(up){
 			setState(EntityState::Jumping);
 		} else if(std::abs(m_velocity.x) >= 0.1f){
-			setState(EntityState::Walking);
+			setState(EntityState::Walking);			
 		} else {
+			m_corriendo = 0;
 			setState(EntityState::Idle);
 		}
 	} else if(getState() == EntityState::Hurt){
@@ -32,7 +35,7 @@ void Player::update(float l_dT){
 		}
 	 /*else if(getState() == EntityState::Dying){
 		if(!m_spriteSheet.getCurrentAnim()->isPlaying()){
-			m_entityManager->remove(m_id);
+			
 		}*/
 	} 
 
@@ -43,6 +46,7 @@ void Player::update(float l_dT){
 			Character::move(Direction::Left);
 			Entity::move(-MOVE_SPEED,0);
 	} else{
+		//m_corriendo = 0;
 		if(!isJumping){
 			this->addVelocity(0,0);
 			m_speed.x = 0;
@@ -51,7 +55,6 @@ void Player::update(float l_dT){
 	}
 	
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)){
-		//std::cout<<goToLeft<<std::endl;
 		if(goToLeft){
 			if(!isJumping && canJump){
 				Character::move(Direction::Left);
@@ -61,7 +64,6 @@ void Player::update(float l_dT){
 				canJump = false;
 			} 
 		}else if(!isJumping && canJump){
-			//std::cout<<"xr "<<std::endl;
 			Character::move(Direction::Right);
 			Entity::move(MOVE_SPEED,-m_jumpVelocity);
 			Character::jump();
@@ -116,7 +118,6 @@ void Player::separate(sf::FloatRect overlap, const Entity & ent2){
 }
 
  void Player::onEntityCollision(Entity* l_collider, bool l_attack){
-
 } 
 
 
@@ -127,8 +128,6 @@ int Player::getHitpoints(){
 void Player::die(){
 	setState(EntityState::Dying);
 	animate();
-	//Sleep(5000);
-	//isDead = true;
 }
 
 bool Player::IsDead(){

@@ -18,8 +18,6 @@ public:
 
 	void load(const std::string& l_path);
 
-	Direction getDirection();
-
 	virtual void update(float l_dT);
 	void draw(sf::RenderWindow* l_wind);
 protected:

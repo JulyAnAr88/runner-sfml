@@ -93,11 +93,11 @@ void Land::draw(sf::RenderWindow &w){
 		Tile* te = (Tile*)findEntity(m_redFlag);
 		te->setAnimId(29); 
 		te->setPosition(3572,385);
-		m_textHalf.setPosition(3575,175);
 		te->draw(&w);
+		m_textHalf.setPosition(3575,175);
 		w.draw(m_textHalf);
 	}
-	
+
 	for(const auto& e: m_entities){
 		if (e.second->getType() == EntityType::Player || 
 			e.second->getType() == EntityType::Enemy){			
@@ -171,7 +171,7 @@ void Land::loadMap(const std::string &l_path){
 				m_backgroundTexture = "";
 				continue;
 			}
-			//std::cout<<"backg "<<itr->first<<" "<<std::endl;
+			
 			sf::Texture* texture = itr->second;
 			m_background.setTexture(*texture);
 			sf::Vector2f viewSize (WIDTH,HEIGHT);
@@ -397,6 +397,7 @@ void Land::collisionCheck(double elapsed){
 					m_player->die();
 				}
 			}
+			m_player->onEntityCollision(e.second,0);
 		}
 	}
 

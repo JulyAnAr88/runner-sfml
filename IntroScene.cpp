@@ -5,7 +5,6 @@
 
 IntroScene::IntroScene(sf::Vector2f l_centerView)
 	: BaseScene(), m_centerView(l_centerView){
-		//this->m_view = new sf::View(sf::FloatRect(0.f, 0.f, WIDTH, HEIGHT));
 	}
 
 IntroScene::IntroScene()

@@ -19,7 +19,6 @@ public:
 private:
 	bool canJump = true;
 	bool isJumping = false;	
-	bool isDead = false;
 
 	float m_corriendo = 0.0;
 
