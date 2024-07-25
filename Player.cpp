@@ -89,8 +89,8 @@ void Player::update(float l_dT){
 
 	animate();		
 
-	m_spriteSheet.update(l_dT);
-	m_spriteSheet.setSpritePosition(m_position);
+	this->m_spriteSheet.update(l_dT);
+	this->m_spriteSheet.setSpritePosition(m_position);
 }
 
 

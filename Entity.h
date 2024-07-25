@@ -1,6 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 #include <iostream>
+#include "SpriteSheet.h"
 #include <SFML/Graphics.hpp>
 
 enum class EntityType{ Base, Enemy, Player, Tile };
@@ -57,6 +58,8 @@ public:
 	
 	virtual void draw(sf::RenderWindow* l_wind) = 0;   
 	virtual void update(float l_dT);
+
+	SpriteSheet m_spriteSheet;
 
 };
 

@@ -23,7 +23,6 @@ public:
 protected:
 	
 	void animate();
-	SpriteSheet m_spriteSheet;
 	float m_jumpVelocity;
 	Direction m_dir;
 

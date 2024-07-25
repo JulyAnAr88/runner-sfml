@@ -21,7 +21,6 @@ public:
 protected:
 	void animate();
 
-	SpriteSheet m_spriteSheet;
 	int m_animId;
 	std::vector<int> m_vId;
 };
